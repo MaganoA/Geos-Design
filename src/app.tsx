@@ -1,5 +1,6 @@
 import { TopBar } from './shell/top-bar'
 import { LeftRail } from './shell/left-rail'
+import { LeftPanel } from './shell/left-panel'
 
 export default function App() {
   return (
@@ -25,7 +26,7 @@ export default function App() {
         style={{ gridArea: 'left' }}
         className="pointer-events-auto absolute z-10 m-5"
       >
-        {/* LeftPanel will float over viewport */}
+        <LeftPanel />
       </aside>
       <section style={{ gridArea: 'left / left / bottom / right' }} className="relative">
         <div className="absolute inset-0 grid place-items-center text-[var(--text-muted)]">
