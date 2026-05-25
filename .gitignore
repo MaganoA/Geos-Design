@@ -27,3 +27,11 @@ dist-ssr
 *.tsbuildinfo
 vite.config.js
 vite.config.d.ts
+
+# Local-only original 3D source (compressed output ships)
+public/models/machine.original.glb
+
+# Vite/Playwright artefacts
+.vite/
+.playwright/
+test-results/
