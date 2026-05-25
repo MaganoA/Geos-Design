@@ -13,3 +13,21 @@ body {
   background: var(--bg-default);
   -webkit-font-smoothing: antialiased;
 }
+
+@font-face {
+  font-family: "Suisse Int'l";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Suisse Int'l"),
+       url("/fonts/suisse-intl-regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Suisse Int'l";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("Suisse Int'l Medium"), local("Suisse Int'l"),
+       url("/fonts/suisse-intl-medium.woff2") format("woff2");
+}
