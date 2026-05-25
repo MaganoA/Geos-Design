@@ -8,15 +8,15 @@ interface ChipProps {
 
 function Chip({ label, primary, secondaryItems = [] }: ChipProps) {
   return (
-    <div className="flex flex-col gap-2 px-6 py-4 border-r border-[var(--border-mute)] min-w-[200px]">
-      <span className="text-[12px] font-medium tracking-[0.143em] uppercase text-[var(--text-muted)]">
+    <div className="flex min-w-[228px] flex-col gap-3 border-r border-[var(--border-mute)] px-6 py-5">
+      <span className="text-xs font-medium uppercase tracking-widest text-[var(--text-muted)]">
         {label}
       </span>
-      <span className="text-[14px] font-medium text-[var(--text-default)] truncate">
+      <span className="truncate text-base font-medium text-[var(--text-default)]">
         {primary}
       </span>
       {secondaryItems.length > 0 && (
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-wrap gap-1.5">
           {secondaryItems.map((s) => (
             <Badge key={s} variant="secondary" className="font-normal">
               {s}
@@ -30,7 +30,7 @@ function Chip({ label, primary, secondaryItems = [] }: ChipProps) {
 
 export function TopBar() {
   return (
-    <div className="flex items-stretch h-full">
+    <div className="flex h-full items-stretch">
       <Chip
         label="Ricetta"
         primary="Lastra 1500x450x6 Gress Rosso"
