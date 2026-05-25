@@ -1,6 +1,7 @@
 import { TopBar } from './shell/top-bar'
 import { LeftRail } from './shell/left-rail'
 import { LeftPanel } from './shell/left-panel'
+import { RightPanel } from './shell/right-panel'
 
 export default function App() {
   return (
@@ -33,8 +34,8 @@ export default function App() {
           Viewport
         </div>
       </section>
-      <aside style={{ gridArea: 'right' }} className="bg-[var(--bg-default)] border-l border-[var(--border-mute)]">
-        {/* RightPanel */}
+      <aside style={{ gridArea: 'right' }} className="bg-transparent">
+        <RightPanel />
       </aside>
       <footer style={{ gridArea: 'bottom' }} className="bg-[var(--bg-default)] border-t border-[var(--border-mute)]">
         {/* BottomToolbar */}
