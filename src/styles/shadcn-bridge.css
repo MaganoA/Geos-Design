@@ -1,1 +1,22 @@
-/* placeholder — filled in Task 4 */
+:root {
+  --background:         var(--bg-default);
+  --foreground:         var(--text-default);
+  --card:               var(--bg-default);
+  --card-foreground:    var(--text-default);
+  --popover:            var(--bg-default);
+  --popover-foreground: var(--text-default);
+  --primary:            var(--bg-state-primary);
+  --primary-foreground: var(--text-inverted);
+  --secondary:          var(--bg-muted);
+  --secondary-foreground: var(--text-default);
+  --muted:              var(--bg-muted);
+  --muted-foreground:   var(--text-muted);
+  --accent:             var(--bg-muted);
+  --accent-foreground:  var(--text-default);
+  --destructive:        var(--bg-state-danger);
+  --destructive-foreground: var(--text-inverted);
+  --border:             var(--border-default);
+  --input:              var(--border-default);
+  --ring:               var(--stone-800);
+  --radius: 0.5rem;
+}
