@@ -1,3 +1,5 @@
+import { TopBar } from './shell/top-bar'
+
 export default function App() {
   return (
     <div
@@ -16,7 +18,7 @@ export default function App() {
         {/* LeftRail */}
       </aside>
       <header style={{ gridArea: 'top' }} className="bg-[var(--bg-default)] border-b border-[var(--border-mute)]">
-        {/* TopBar */}
+        <TopBar />
       </header>
       <aside
         style={{ gridArea: 'left' }}
