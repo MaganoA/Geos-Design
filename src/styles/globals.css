@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@import "./tokens.css";
+@import "./shadcn-bridge.css";
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-default);
+  background: var(--bg-default);
+  -webkit-font-smoothing: antialiased;
+}
