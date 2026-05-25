@@ -11,20 +11,11 @@ if [ ! -f "$SRC" ]; then
   exit 1
 fi
 
-TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
-
-echo "→ Meshopt quantization"
-pnpm dlx @gltf-transform/cli@^4 optimize "$SRC" "$TMP/meshopt.glb" \
-  --compress meshopt --simplify false
-
-echo "→ Draco compression"
-pnpm dlx @gltf-transform/cli@^4 draco "$TMP/meshopt.glb" "$TMP/draco.glb" \
-  --quantize-position 14 --quantize-normal 10
-
-echo "→ WebP textures"
-pnpm dlx @gltf-transform/cli@^4 webp "$TMP/draco.glb" "$OUT" \
-  --quality 85
+echo "→ Optimize: Draco + WebP textures (single pass)"
+pnpm dlx @gltf-transform/cli@^4 optimize "$SRC" "$OUT" \
+  --compress draco \
+  --texture-compress webp \
+  --simplify false
 
 ORIG_KB=$(du -k "$SRC" | cut -f1)
 OUT_KB=$(du -k "$OUT" | cut -f1)
