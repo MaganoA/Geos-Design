@@ -24,16 +24,13 @@ export default function App() {
       <header style={{ gridArea: 'top' }} className="bg-[var(--bg-default)] border-b border-[var(--border-mute)]">
         <TopBar />
       </header>
-      <aside
-        style={{ gridArea: 'left' }}
-        className="pointer-events-auto absolute z-10 m-5"
-      >
-        <LeftPanel />
-      </aside>
       <section style={{ gridArea: 'left / left / bottom / right' }} className="relative">
         <div className="absolute inset-0 grid place-items-center text-[var(--text-muted)]">
           Viewport
         </div>
+        <aside className="pointer-events-auto absolute top-5 left-5 z-10">
+          <LeftPanel />
+        </aside>
       </section>
       <aside style={{ gridArea: 'right' }} className="bg-transparent">
         <RightPanel />
