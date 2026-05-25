@@ -20,7 +20,7 @@ body {
   font-weight: 400;
   font-display: swap;
   src: local("Suisse Int'l"),
-       url("/fonts/suisse-intl-regular.woff2") format("woff2");
+       url("/fonts/SuisseIntl-Regular.otf") format("opentype");
 }
 
 @font-face {
@@ -29,5 +29,5 @@ body {
   font-weight: 500;
   font-display: swap;
   src: local("Suisse Int'l Medium"), local("Suisse Int'l"),
-       url("/fonts/suisse-intl-medium.woff2") format("woff2");
+       url("/fonts/SuisseIntl-Medium.otf") format("opentype");
 }
