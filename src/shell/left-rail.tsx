@@ -5,7 +5,7 @@ export function LeftRail() {
     <div className="flex h-full flex-col items-center justify-between py-3">
       <button
         type="button"
-        className="grid h-9 w-9 place-items-center rounded-md text-[var(--icon-default)] hover:bg-[var(--bg-muted)]"
+        className="grid h-11 w-11 place-items-center rounded-md text-[var(--icon-default)] hover:bg-[var(--bg-muted)]"
         aria-label="Dashboard"
       >
         <LayoutDashboard size={20} />
