@@ -5,19 +5,34 @@ import { TopBar } from '@/shell/top-bar'
 import { Avatar } from '@/components/primitives/avatar'
 import { TopBarPreviewShell, PREVIEW_HOP } from './topbar-shell'
 
+const TRANSITION_OPEN = {
+  gridRows: 'grid-template-rows 320ms cubic-bezier(0.32, 0.72, 0, 1)',
+  cellPadding: 'padding 320ms cubic-bezier(0.32, 0.72, 0, 1)',
+  cardOpacity: 'opacity 220ms 80ms cubic-bezier(0.16, 1, 0.3, 1)',
+  cardTransform: 'transform 280ms 60ms cubic-bezier(0.16, 1, 0.3, 1)',
+}
+const TRANSITION_CLOSE = {
+  gridRows: 'grid-template-rows 200ms cubic-bezier(0.32, 0.72, 0, 1)',
+  cellPadding: 'padding 200ms cubic-bezier(0.32, 0.72, 0, 1)',
+  cardOpacity: 'opacity 140ms cubic-bezier(0.16, 1, 0.3, 1)',
+  cardTransform: 'transform 180ms cubic-bezier(0.16, 1, 0.3, 1)',
+}
+
 export function TopBarVariantB() {
   const [collapsed, setCollapsed] = useState(false)
+  const t = collapsed ? TRANSITION_CLOSE : TRANSITION_OPEN
+
   return (
     <TopBarPreviewShell
       variantLabel="B · Padded inset card (toggle next to avatar, Figma-aligned)"
       hop={PREVIEW_HOP}
-      // 124 (card) + 16 (top padding). No bottom padding — the 16px gap to
-      // the panels below comes from the LeftPanel/RightPanel top margins,
-      // matching the external 16px gutter.
       topBarRowHeight={collapsed ? 0 : 140}
-      topBarCellStyle={{ padding: collapsed ? 0 : '16px 16px 0 16px' }}
+      topBarCellStyle={{
+        padding: collapsed ? 0 : '16px 16px 0 16px',
+        transition: t.cellPadding,
+      }}
       railSlot={<CustomRail collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />}
-      rowsTransition="grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1), padding 280ms cubic-bezier(0.16, 1, 0.3, 1)"
+      rowsTransition={t.gridRows}
       topBarSlot={
         <div
           className="h-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-default)]"
@@ -25,7 +40,8 @@ export function TopBarVariantB() {
             boxShadow: 'var(--shadow-base)',
             opacity: collapsed ? 0 : 1,
             transform: collapsed ? 'translateY(-8px)' : 'translateY(0)',
-            transition: 'opacity 200ms ease-out, transform 280ms cubic-bezier(0.16, 1, 0.3, 1)',
+            transition: `${t.cardOpacity}, ${t.cardTransform}`,
+            willChange: 'transform, opacity',
           }}
         >
           <TopBar />
@@ -48,14 +64,19 @@ function CustomRail({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
           onClick={onToggle}
           aria-label={collapsed ? 'Mostra pannello superiore' : 'Nascondi pannello superiore'}
           aria-pressed={!collapsed}
-          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] hover:bg-[var(--border-mute)] hover:text-[var(--icon-default)]"
+          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] transition-transform duration-150 ease-out hover:bg-[var(--border-mute)] hover:text-[var(--icon-default)] active:scale-[0.96]"
         >
-          {/* Sidebar rotated 90° = top-panel pictogram */}
-          <Sidebar className="h-5 w-5 rotate-90" />
+          <Sidebar
+            className="h-5 w-5"
+            style={{
+              transform: collapsed ? 'rotate(270deg)' : 'rotate(90deg)',
+              transition: 'transform 280ms cubic-bezier(0.32, 0.72, 0, 1)',
+            }}
+          />
         </button>
         <button
           type="button"
-          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] hover:bg-[var(--border-mute)]"
+          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] transition-transform duration-150 ease-out hover:bg-[var(--border-mute)] active:scale-[0.96]"
           aria-label="Account"
         >
           <Avatar

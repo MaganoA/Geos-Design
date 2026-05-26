@@ -31,3 +31,14 @@ body {
   src: local("Suisse Int'l Medium"), local("Suisse Int'l"),
        url("/fonts/SuisseIntl-Medium.otf") format("opentype");
 }
+
+/* Respect prefers-reduced-motion: keep transitions present (so state
+   changes are still legible) but shorten them to near-instant. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

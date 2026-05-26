@@ -11,11 +11,25 @@ import { TopBarVariantB } from './preview/topbar-b'
 import { TopBarVariantC } from './preview/topbar-c'
 import { TopBarVariantD } from './preview/topbar-d'
 
-// Card is 124px; we pad the cell with 16px top + 16px sides (no bottom). The
-// 16px gap between the TopBar card and the panels below comes from the
-// LeftPanel/RightPanel margins, matching the external 16px so the whole shell
-// reads as one consistent gutter.
 const TOP_BAR_HEIGHT = 140
+
+// Motion choreography for the TopBar collapse/expand. Asymmetric on
+// purpose: opening is gentler (the user is about to read), closing is
+// snappier (system response). The container moves on the iOS drawer
+// curve; content uses ease-out-expo with a slight delay on open so the
+// card body reveals *after* the row has begun expanding.
+const TRANSITION_OPEN = {
+  gridRows: 'grid-template-rows 320ms cubic-bezier(0.32, 0.72, 0, 1)',
+  cellPadding: 'padding 320ms cubic-bezier(0.32, 0.72, 0, 1)',
+  cardOpacity: 'opacity 220ms 80ms cubic-bezier(0.16, 1, 0.3, 1)',
+  cardTransform: 'transform 280ms 60ms cubic-bezier(0.16, 1, 0.3, 1)',
+}
+const TRANSITION_CLOSE = {
+  gridRows: 'grid-template-rows 200ms cubic-bezier(0.32, 0.72, 0, 1)',
+  cellPadding: 'padding 200ms cubic-bezier(0.32, 0.72, 0, 1)',
+  cardOpacity: 'opacity 140ms cubic-bezier(0.16, 1, 0.3, 1)',
+  cardTransform: 'transform 180ms cubic-bezier(0.16, 1, 0.3, 1)',
+}
 
 export default function App() {
   if (typeof window !== 'undefined') {
@@ -27,6 +41,7 @@ export default function App() {
   }
 
   const [topBarCollapsed, setTopBarCollapsed] = useState(false)
+  const t = topBarCollapsed ? TRANSITION_CLOSE : TRANSITION_OPEN
 
   return (
     <div
@@ -34,7 +49,7 @@ export default function App() {
       style={{
         gridTemplateColumns: '52px 1fr 368px',
         gridTemplateRows: `${topBarCollapsed ? 0 : TOP_BAR_HEIGHT}px 1fr 88px`,
-        transition: 'grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: t.gridRows,
         gridTemplateAreas: `
           "rail top    top"
           "rail left   right"
@@ -52,7 +67,7 @@ export default function App() {
         style={{
           gridArea: 'top',
           padding: topBarCollapsed ? 0 : '16px 16px 0 16px',
-          transition: 'padding 280ms cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: t.cellPadding,
         }}
       >
         <div
@@ -61,7 +76,8 @@ export default function App() {
             boxShadow: 'var(--shadow-base)',
             opacity: topBarCollapsed ? 0 : 1,
             transform: topBarCollapsed ? 'translateY(-8px)' : 'translateY(0)',
-            transition: 'opacity 200ms ease-out, transform 280ms cubic-bezier(0.16, 1, 0.3, 1)',
+            transition: `${t.cardOpacity}, ${t.cardTransform}`,
+            willChange: 'transform, opacity',
           }}
         >
           <TopBar />
@@ -101,13 +117,19 @@ function Rail({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => voi
           onClick={onToggle}
           aria-label={collapsed ? 'Mostra pannello superiore' : 'Nascondi pannello superiore'}
           aria-pressed={!collapsed}
-          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] hover:bg-[var(--border-mute)] hover:text-[var(--icon-default)]"
+          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] transition-transform duration-150 ease-out hover:bg-[var(--border-mute)] hover:text-[var(--icon-default)] active:scale-[0.96]"
         >
-          <Sidebar className="h-5 w-5 rotate-90" />
+          <Sidebar
+            className="h-5 w-5"
+            style={{
+              transform: collapsed ? 'rotate(270deg)' : 'rotate(90deg)',
+              transition: 'transform 280ms cubic-bezier(0.32, 0.72, 0, 1)',
+            }}
+          />
         </button>
         <button
           type="button"
-          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] hover:bg-[var(--border-mute)]"
+          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] transition-transform duration-150 ease-out hover:bg-[var(--border-mute)] active:scale-[0.96]"
           aria-label="Account"
         >
           <Avatar
