@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import type { DeviceMeta } from '@/types'
 import CaretRight from '@/icons/caret-right.svg?react'
 
@@ -5,36 +6,59 @@ interface Props {
   meta: DeviceMeta
   depth: number
   selected: boolean
+  focused: boolean
   hasChildren: boolean
   expanded: boolean
   onToggle: () => void
   onSelect: () => void
+  onFocus: () => void
   onHover: (id: string | null) => void
 }
 
-export function TreeItem({ meta, depth, selected, hasChildren, expanded, onToggle, onSelect, onHover }: Props) {
-  // Categories with selectable=false ignore selection — clicking just expand/collapses.
+export function TreeItem({
+  meta,
+  depth,
+  selected,
+  focused,
+  hasChildren,
+  expanded,
+  onToggle,
+  onSelect,
+  onFocus,
+  onHover,
+}: Props) {
+  const ref = useRef<HTMLButtonElement>(null)
   const isCategory = meta.selectable === false
+
+  // When this item becomes focused via keyboard navigation, move the DOM
+  // focus to its button so the native focus ring follows and the user can
+  // continue arrow-keying.
+  useEffect(() => {
+    if (focused && document.activeElement !== ref.current) {
+      ref.current?.focus({ preventScroll: false })
+    }
+  }, [focused])
 
   return (
     <button
+      ref={ref}
       type="button"
+      tabIndex={focused ? 0 : -1}
+      onFocus={onFocus}
       onMouseEnter={() => onHover(meta.id)}
       onMouseLeave={() => onHover(null)}
       onClick={(e) => {
         const onCaret = (e.target as HTMLElement).dataset.role === 'toggle'
         if (onCaret) {
-          // Caret is the only way to collapse — full toggle.
           onToggle()
           return
         }
-        // Row click on any parent expands (never collapses) so operators
-        // can't accidentally hide children mid-flow.
         if (hasChildren && !expanded) onToggle()
         if (!isCategory) onSelect()
       }}
       className={[
-        'flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition',
+        'flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition outline-none',
+        'focus-visible:ring-2 focus-visible:ring-[var(--stone-300)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--bg-default)]',
         isCategory
           ? 'font-medium text-[var(--text-default)] hover:bg-[var(--bg-muted)]'
           : selected

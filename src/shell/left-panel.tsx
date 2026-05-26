@@ -5,8 +5,12 @@ import { DeviceTree } from './tree/device-tree'
 
 export function LeftPanel() {
   return (
+    // max-h-full = capped at the parent aside (which has top-4 bottom-4 inset,
+    // so the cap is "16px from window bottom"). NO h-full — the panel auto-sizes
+    // to the tree height when collapsed, then expands as the tree expands,
+    // until it hits the cap.
     <div
-      className="flex h-full max-h-full max-w-[348px] flex-col overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
+      className="flex max-h-full max-w-[348px] flex-col overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
       style={{
         boxShadow: 'var(--shadow-base)',
         width: 348,
@@ -28,12 +32,16 @@ export function LeftPanel() {
         </Badge>
       </header>
       {/*
-        type="scroll": Radix shows the scrollbar only while the user is
-        scrolling, then fades it out. Matches the Emil rule of "no chrome
-        unless it's earned".
+        No flex-1 here on purpose: ScrollArea sizes to its content by default.
+        When the outer panel hits its max-h cap, flex-shrink kicks in and the
+        ScrollArea compresses — Radix's Viewport stays size-full so the tree
+        inside scrolls. type="scroll" keeps the scrollbar hidden except while
+        the user is actively scrolling.
       */}
-      <ScrollArea type="scroll" className="min-h-0 flex-1 px-3 pb-5">
-        <DeviceTree />
+      <ScrollArea type="scroll" className="min-h-0">
+        <div className="px-3 pb-5">
+          <DeviceTree />
+        </div>
       </ScrollArea>
     </div>
   )
