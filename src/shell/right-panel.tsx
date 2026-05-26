@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react'
 import XIcon from '@/icons/x.svg?react'
+import { StatusBadge } from '@/components/primitives/status-badge'
+import { useDeviceState } from '@/hooks/use-device-state'
 import { useSelectedDevice } from '@/hooks/use-selected-device'
+import type { DeviceStatus } from '@/types/device'
+
+const STATUS_LABELS: Record<DeviceStatus, string> = {
+  active: 'Attivo',
+  idle: 'Inattivo',
+  warning: 'Attenzione',
+  error: 'Errore',
+  offline: 'Offline',
+}
 
 export function RightPanel() {
   const { device, clear } = useSelectedDevice()
@@ -20,6 +31,15 @@ export function RightPanel() {
     return () => window.clearTimeout(id)
   }, [visible, device?.meta.id])
 
+  // RightPanel reads only the `status` slice of whatever the device's
+  // live state happens to be — it doesn't know (or need to know) the
+  // full shape. Every device that wants a status badge in the header
+  // just needs to expose `status: DeviceStatus` in its state.
+  const liveSlice = useDeviceState<{ status?: DeviceStatus }>(
+    device?.meta.id ?? '__none__',
+  )
+  const status = liveSlice?.status
+
   if (!device || !visible) return null
 
   const { Panel, meta } = device
@@ -35,8 +55,13 @@ export function RightPanel() {
         willChange: 'opacity, transform',
       }}
     >
-      <header className="flex items-start justify-between gap-3 px-5 pt-4 pb-2">
-        <span className="text-lg font-medium leading-tight">{meta.label}</span>
+      <header className="flex items-start justify-between gap-3 px-5 pt-4 pb-3">
+        <div className="flex flex-col gap-2">
+          <span className="text-lg font-medium leading-tight">{meta.label}</span>
+          {status && (
+            <StatusBadge status={status}>{STATUS_LABELS[status]}</StatusBadge>
+          )}
+        </div>
         <button
           type="button"
           onClick={clear}

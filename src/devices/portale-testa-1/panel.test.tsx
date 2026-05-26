@@ -5,10 +5,9 @@ import { initialState } from './state'
 import { Panel } from './panel'
 
 describe('PortaleTesta1 Panel', () => {
-  it('renders Stato, Posizione, and Lavorazione sections', () => {
+  it('renders Posizione and Lavorazione sections', () => {
     useMachineStore.getState().setDevice('portale-testa-1', initialState)
     render(<Panel />)
-    expect(screen.getByText('Stato')).toBeInTheDocument()
     expect(screen.getByText('Posizione')).toBeInTheDocument()
     expect(screen.getByText('Lavorazione in corso')).toBeInTheDocument()
     expect(screen.getByText('JOB-0430')).toBeInTheDocument()
