@@ -1,6 +1,7 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import CaretDown from '@/icons/caret-down.svg?react'
+import { DeviceTree } from './tree/device-tree'
 
 export function LeftPanel() {
   return (
@@ -24,7 +25,7 @@ export function LeftPanel() {
         </Badge>
       </header>
       <ScrollArea className="h-[440px] px-3 pb-5">
-        <div className="px-3 text-sm text-[var(--text-muted)]">Tree will render here</div>
+        <DeviceTree />
       </ScrollArea>
     </div>
   )
