@@ -59,6 +59,7 @@ import * as elettroserratureMeta from './sicurezza-elettroserrature/meta'
 import { Panel as StubPanel } from './_stub/panel'
 import { Toolbar as StubToolbar } from './_stub/toolbar'
 import { Panel as PortaleTesta1Panel } from './portale-testa-1/panel'
+import { Toolbar as PortaleTesta1Toolbar } from './portale-testa-1/toolbar'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
@@ -83,7 +84,7 @@ const registry: Record<string, RegisteredDevice> = {
   'portale-testa-1': {
     meta: portaleTesta1Meta.meta,
     Panel: PortaleTesta1Panel as React.ComponentType<{ label: string }>,
-    Toolbar: StubToolbar,
+    Toolbar: PortaleTesta1Toolbar,
   },
   'portale-testa-1-tenuta':      entry(portaleTesta1TenutaMeta.meta),
   'portale-testa-1-erogatore':   entry(portaleTesta1ErogatoreMeta.meta),
