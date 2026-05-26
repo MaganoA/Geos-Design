@@ -11,7 +11,11 @@ import { TopBarVariantB } from './preview/topbar-b'
 import { TopBarVariantC } from './preview/topbar-c'
 import { TopBarVariantD } from './preview/topbar-d'
 
-const TOP_BAR_HEIGHT = 156 // 124 card + 16 top padding + 16 bottom padding
+// Card is 124px; we pad the cell with 16px top + 16px sides (no bottom). The
+// 16px gap between the TopBar card and the panels below comes from the
+// LeftPanel/RightPanel margins, matching the external 16px so the whole shell
+// reads as one consistent gutter.
+const TOP_BAR_HEIGHT = 140
 
 export default function App() {
   if (typeof window !== 'undefined') {
@@ -47,7 +51,7 @@ export default function App() {
       <header
         style={{
           gridArea: 'top',
-          padding: topBarCollapsed ? 0 : '16px 16px 16px 16px',
+          padding: topBarCollapsed ? 0 : '16px 16px 0 16px',
           transition: 'padding 280ms cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
@@ -70,7 +74,7 @@ export default function App() {
         <div className="absolute inset-0 grid place-items-center text-[var(--text-muted)]">
           Viewport
         </div>
-        <aside className="pointer-events-auto absolute top-5 left-5 z-10">
+        <aside className="pointer-events-auto absolute top-4 left-4 z-10">
           <LeftPanel />
         </aside>
       </section>

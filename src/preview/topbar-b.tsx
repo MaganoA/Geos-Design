@@ -11,9 +11,11 @@ export function TopBarVariantB() {
     <TopBarPreviewShell
       variantLabel="B · Padded inset card (toggle next to avatar, Figma-aligned)"
       hop={PREVIEW_HOP}
-      // 124 (card) + 16 (top padding) + 16 (bottom padding) = 156
-      topBarRowHeight={collapsed ? 0 : 156}
-      topBarCellStyle={{ padding: collapsed ? 0 : '16px 16px 16px 16px' }}
+      // 124 (card) + 16 (top padding). No bottom padding — the 16px gap to
+      // the panels below comes from the LeftPanel/RightPanel top margins,
+      // matching the external 16px gutter.
+      topBarRowHeight={collapsed ? 0 : 140}
+      topBarCellStyle={{ padding: collapsed ? 0 : '16px 16px 0 16px' }}
       railSlot={<CustomRail collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />}
       rowsTransition="grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1), padding 280ms cubic-bezier(0.16, 1, 0.3, 1)"
       topBarSlot={
