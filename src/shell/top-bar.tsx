@@ -8,12 +8,14 @@ function Chip({ label, primary, secondaryItems = [] }: ChipProps) {
   const tags = secondaryItems.filter((s) => !s.startsWith('Visualizza'))
   return (
     <div className="flex min-w-[260px] flex-col gap-3 border-r border-[var(--border-mute)] px-6 py-5">
-      <span className="text-2xs font-medium uppercase tracking-widest text-[var(--text-muted)]">
-        {label}
-      </span>
-      <span className="text-base font-medium leading-snug text-[var(--text-default)]">
-        {primary}
-      </span>
+      <div className="flex flex-col gap-1">
+        <span className="text-xs font-medium text-[var(--text-muted)]">
+          {label}
+        </span>
+        <span className="text-base font-medium leading-snug text-[var(--text-default)]">
+          {primary}
+        </span>
+      </div>
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {tags.map((s) => (
