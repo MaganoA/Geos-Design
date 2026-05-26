@@ -35,13 +35,13 @@ export function RightPanel() {
         willChange: 'opacity, transform',
       }}
     >
-      <header className="flex items-center justify-between border-b border-[var(--border-mute)] px-5 py-4">
-        <span className="text-lg font-medium">{meta.label}</span>
+      <header className="flex items-start justify-between gap-3 px-5 pt-4 pb-2">
+        <span className="text-lg font-medium leading-tight">{meta.label}</span>
         <button
           type="button"
           onClick={clear}
           aria-label="Close"
-          className="grid h-8 w-8 place-items-center rounded text-[var(--icon-default-subtle)] transition-transform duration-150 ease-out hover:bg-[var(--bg-muted)] hover:text-[var(--icon-default)] active:scale-[0.96]"
+          className="-mr-1 grid h-8 w-8 shrink-0 place-items-center rounded text-[var(--icon-default-subtle)] transition-transform duration-150 ease-out hover:bg-[var(--bg-muted)] hover:text-[var(--icon-default)] active:scale-[0.96]"
         >
           <XIcon className="h-5 w-5" />
         </button>

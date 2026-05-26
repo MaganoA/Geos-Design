@@ -5,7 +5,7 @@ import { useDeviceState } from '@/hooks/use-device-state'
 import { formatMm, formatPercent, formatTime } from '@/lib/format'
 import type { PortaleTesta1State } from './state'
 
-const STATUS_LABELS: Record<string, string> = {
+const STATUS_LABELS: Record<PortaleTesta1State['status'], string> = {
   active: 'Attivo',
   idle: 'Inattivo',
   warning: 'Attenzione',
@@ -17,11 +17,11 @@ export function Panel() {
   const s = useDeviceState<PortaleTesta1State>('portale-testa-1')
   if (!s) return null
   return (
-    <div className="flex flex-col">
-      <div className="px-5 pt-4 pb-3">
-        <StatusBadge status={s.status}>
-          {STATUS_LABELS[s.status] ?? s.status}
-        </StatusBadge>
+    <div className="flex flex-col gap-3 px-3 pt-1 pb-3">
+      {/* Status reads as a property of the device title, not a section
+          on its own — sits directly under the panel header. */}
+      <div className="px-1">
+        <StatusBadge status={s.status}>{STATUS_LABELS[s.status]}</StatusBadge>
       </div>
       <DataSection title="Coordinate">
         <DataRow label="X" value={formatMm(s.position.x)} />
