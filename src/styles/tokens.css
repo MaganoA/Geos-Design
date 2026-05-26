@@ -40,8 +40,9 @@
 
   /* Warm-neutral palette */
   --stone-25:  #ffffff;  --stone-50:  #f5f5f4;  --stone-100: #e7e5e4;
-  --stone-300: #a6a09b;  --stone-500: #79716b;  --stone-600: #57534d;
-  --stone-800: #24211e;  --stone-900: #14110f;  --stone-950: #141413;
+  --stone-200: #d6d3d1;  --stone-300: #a6a09b;  --stone-500: #79716b;
+  --stone-600: #57534d;  --stone-800: #24211e;  --stone-900: #14110f;
+  --stone-950: #141413;
 
   /* Accents */
   --green-300: #4fc660;  --green-500: #33803f;  --green-bg:  #66dc7e1a;

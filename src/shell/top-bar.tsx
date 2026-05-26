@@ -18,7 +18,11 @@ function Chip({ label, primary, secondaryItems = [] }: ChipProps) {
       {secondaryItems.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {secondaryItems.map((s) => (
-            <Badge key={s} variant="secondary" className="font-normal">
+            <Badge
+              key={s}
+              variant="secondary"
+              className="rounded-md px-2.5 py-1 text-sm font-normal text-[var(--text-default)]"
+            >
               {s}
             </Badge>
           ))}

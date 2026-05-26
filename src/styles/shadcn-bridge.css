@@ -1,22 +1,38 @@
+/* Map our semantic tokens into Tailwind v4's @theme system so that
+   shadcn utilities like bg-secondary / text-muted-foreground / border
+   actually generate working CSS. @theme inline preserves the var()
+   references so tokens stay swappable at runtime. */
+
+@theme inline {
+  --color-background:         var(--bg-default);
+  --color-foreground:         var(--text-default);
+
+  --color-card:               var(--bg-default);
+  --color-card-foreground:    var(--text-default);
+
+  --color-popover:            var(--bg-default);
+  --color-popover-foreground: var(--text-default);
+
+  --color-primary:            var(--bg-state-primary);
+  --color-primary-foreground: var(--text-inverted);
+
+  --color-secondary:          var(--stone-200);
+  --color-secondary-foreground: var(--text-default);
+
+  --color-muted:              var(--bg-muted);
+  --color-muted-foreground:   var(--text-muted);
+
+  --color-accent:             var(--bg-muted);
+  --color-accent-foreground:  var(--text-default);
+
+  --color-destructive:        var(--bg-state-danger);
+  --color-destructive-foreground: var(--text-inverted);
+
+  --color-border:             var(--border-default);
+  --color-input:              var(--border-default);
+  --color-ring:               var(--stone-800);
+}
+
 :root {
-  --background:         var(--bg-default);
-  --foreground:         var(--text-default);
-  --card:               var(--bg-default);
-  --card-foreground:    var(--text-default);
-  --popover:            var(--bg-default);
-  --popover-foreground: var(--text-default);
-  --primary:            var(--bg-state-primary);
-  --primary-foreground: var(--text-inverted);
-  --secondary:          var(--bg-muted);
-  --secondary-foreground: var(--text-default);
-  --muted:              var(--bg-muted);
-  --muted-foreground:   var(--text-muted);
-  --accent:             var(--bg-muted);
-  --accent-foreground:  var(--text-default);
-  --destructive:        var(--bg-state-danger);
-  --destructive-foreground: var(--text-inverted);
-  --border:             var(--border-default);
-  --input:              var(--border-default);
-  --ring:               var(--stone-800);
   --radius: 0.5rem;
 }
