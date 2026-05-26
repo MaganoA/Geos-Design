@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Environment, ContactShadows } from '@react-three/drei'
 import { Box3, MathUtils, Mesh, PerspectiveCamera as ThreePerspectiveCamera, Vector3 } from 'three'
+import { useSelectedDevice } from '@/hooks/use-selected-device'
 import { useSelectionStore } from '@/store/selection-store'
 import { useMachineGLTF } from './assets'
 import { MachineModelSuspense } from './machine-model'
@@ -19,6 +20,9 @@ const CAMERA_DIR = new Vector3(0.6, 0.4, 0.75).normalize()
 // the frame, the machine body itself stays visible). Tuned tighter so
 // the machine reads as the subject, not a miniature on a big sheet.
 const FIT_MARGIN = 0.72
+// Sub-assembly framing leaves more headroom so the surrounding machine
+// reads as context, not as crop.
+const FIT_MARGIN_SUBASSEMBLY = 1.4
 
 // Critically-damped lerp coefficient for the camera animation.
 // λ = 7 → ~63 % progress at 140 ms, ~90 % at 320 ms, ~99 % at 640 ms.
@@ -77,10 +81,24 @@ function CameraRig() {
   const machineBox = useMachineBox()
   const camera = useThree((s) => s.camera)
   const size = useThree((s) => s.size)
+  const meshIndex = useSelectionStore((s) => s.meshIndex)
+  const { id: selectedId } = useSelectedDevice()
 
-  // Target values driven by layout. `currentLookAt` carries the camera's
-  // *animated* look-at point so it can interpolate alongside position —
-  // snapping lookAt while damping position would twist the view mid-move.
+  // Frame the selected device's bbox when one is selected AND has matched
+  // meshes; otherwise frame the whole machine. Selecting a category that
+  // has no mesh data (e.g. a tree group) falls back to the machine view —
+  // we never zoom into nothing.
+  const framingBox = useMemo(() => {
+    if (selectedId && meshIndex[selectedId]?.boundingBox) {
+      return meshIndex[selectedId].boundingBox
+    }
+    return machineBox
+  }, [selectedId, meshIndex, machineBox])
+
+  // Target values driven by layout + selection. `currentLookAt` carries
+  // the camera's *animated* look-at point so it can interpolate alongside
+  // position — snapping lookAt while damping position would twist the
+  // view mid-move.
   const desiredPos = useRef(new Vector3())
   const desiredLookAt = useRef(new Vector3())
   const currentLookAt = useRef(new Vector3())
@@ -88,8 +106,8 @@ function CameraRig() {
 
   useEffect(() => {
     if (!(camera instanceof ThreePerspectiveCamera)) return
-    const center = machineBox.getCenter(new Vector3())
-    const boxSize = machineBox.getSize(new Vector3())
+    const center = framingBox.getCenter(new Vector3())
+    const boxSize = framingBox.getSize(new Vector3())
     // Bounding-sphere radius that comfortably encloses the projected bbox
     // at the chosen view angle. 0.62 ≈ half the diagonal of a cube.
     const radius = Math.max(boxSize.x, boxSize.y, boxSize.z) * 0.62
@@ -100,7 +118,10 @@ function CameraRig() {
     // limiting axis.
     const distForVertical = radius / Math.sin(fov / 2)
     const distForHorizontal = distForVertical / aspect
-    const distance = Math.max(distForVertical, distForHorizontal) * FIT_MARGIN
+    // Looser margin (more headroom) when zoomed into a subassembly so the
+    // surrounding context isn't completely clipped.
+    const margin = framingBox === machineBox ? FIT_MARGIN : FIT_MARGIN_SUBASSEMBLY
+    const distance = Math.max(distForVertical, distForHorizontal) * margin
 
     // Bias the look-at point downward by a fraction of the machine's
     // height. The 3/4 view from above tends to drop the projected
@@ -128,7 +149,7 @@ function CameraRig() {
       camera.lookAt(currentLookAt.current)
       initialised.current = true
     }
-  }, [camera, machineBox, size.width, size.height])
+  }, [camera, framingBox, machineBox, size.width, size.height])
 
   useFrame((_, delta) => {
     if (!(camera instanceof ThreePerspectiveCamera)) return
