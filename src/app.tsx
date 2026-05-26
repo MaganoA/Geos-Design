@@ -10,6 +10,7 @@ import { TopBarVariantA } from './preview/topbar-a'
 import { TopBarVariantB } from './preview/topbar-b'
 import { TopBarVariantC } from './preview/topbar-c'
 import { TopBarVariantD } from './preview/topbar-d'
+import { Viewport } from './viewport/canvas'
 
 const TOP_BAR_HEIGHT = 140
 
@@ -87,9 +88,7 @@ export default function App() {
         style={{ gridArea: 'left / left / bottom / right' }}
         className="relative"
       >
-        <div className="absolute inset-0 grid place-items-center text-[var(--text-muted)]">
-          Viewport
-        </div>
+        <Viewport />
         <aside className="pointer-events-auto absolute top-4 bottom-4 left-4 z-10">
           <LeftPanel />
         </aside>
