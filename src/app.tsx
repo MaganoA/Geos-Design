@@ -11,8 +11,10 @@ import { TopBarVariantB } from './preview/topbar-b'
 import { TopBarVariantC } from './preview/topbar-c'
 import { TopBarVariantD } from './preview/topbar-d'
 import { Viewport } from './viewport/canvas'
+import { useSelectedDevice } from './hooks/use-selected-device'
 
 const TOP_BAR_HEIGHT = 140
+const RIGHT_PANEL_WIDTH = 368
 
 // Motion choreography for the TopBar collapse/expand. Asymmetric on
 // purpose: opening is gentler (the user is about to read), closing is
@@ -44,17 +46,22 @@ export default function App() {
   const [topBarCollapsed, setTopBarCollapsed] = useState(false)
   const t = topBarCollapsed ? TRANSITION_CLOSE : TRANSITION_OPEN
 
+  // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
+  // absorbs the freed width, so the 3D Canvas grows into it. The whole
+  // shell animates as a unit via grid-template-columns.
+  const { device } = useSelectedDevice()
+  const rightColVisible = !!device && device.meta.hasData !== false
+
   return (
     <div
       className="grid h-dvh w-dvw bg-[var(--bg-muted)]"
       style={{
-        gridTemplateColumns: '52px 1fr 368px',
-        gridTemplateRows: `${topBarCollapsed ? 0 : TOP_BAR_HEIGHT}px 1fr 88px`,
-        transition: t.gridRows,
+        gridTemplateColumns: `52px 1fr ${rightColVisible ? RIGHT_PANEL_WIDTH : 0}px`,
+        gridTemplateRows: `${topBarCollapsed ? 0 : TOP_BAR_HEIGHT}px 1fr`,
+        transition: `${t.gridRows}, grid-template-columns 320ms cubic-bezier(0.32, 0.72, 0, 1)`,
         gridTemplateAreas: `
           "rail top    top"
           "rail left   right"
-          "rail bottom bottom"
         `,
       }}
     >
@@ -84,21 +91,25 @@ export default function App() {
           <TopBar />
         </div>
       </header>
-      <section
-        style={{ gridArea: 'left / left / bottom / right' }}
-        className="relative"
-      >
+      {/* Viewport section spans just col 2 of the main row (full lower
+          height — no bottom-toolbar row pushing it up). The Canvas
+          physically sits in this cell only; LeftPanel + BottomToolbar
+          float over it as absolute cards, never carving space out of
+          the 3D area. */}
+      <section style={{ gridArea: 'left' }} className="relative">
         <Viewport />
         <aside className="pointer-events-auto absolute top-4 bottom-4 left-4 z-10">
           <LeftPanel />
         </aside>
+        <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 flex justify-center pb-4">
+          <div className="pointer-events-auto">
+            <BottomToolbar />
+          </div>
+        </div>
       </section>
       <aside style={{ gridArea: 'right' }} className="bg-transparent">
         <RightPanel />
       </aside>
-      <footer style={{ gridArea: 'bottom' }} className="border-none bg-transparent">
-        <BottomToolbar />
-      </footer>
     </div>
   )
 }
