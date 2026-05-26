@@ -1,5 +1,8 @@
 import { Suspense, useEffect, useMemo } from 'react'
+import type { ThreeEvent } from '@react-three/fiber'
 import { allDevices } from '@/devices'
+import { useSelectedDevice } from '@/hooks/use-selected-device'
+import { useSelectionStore } from '@/store/selection-store'
 import { useMachineGLTF } from './assets'
 import { buildDeviceMeshIndex, type MeshIndexEntry } from './device-meshes'
 
@@ -7,8 +10,25 @@ export interface MachineModelProps {
   onIndex?: (index: Record<string, MeshIndexEntry>) => void
 }
 
+/**
+ * Resolves a mesh name to the device it belongs to. Linear scan of the
+ * index — fine at our scale (≤50 entries), keeps the data flow simple.
+ */
+function findDeviceIdForMesh(
+  meshName: string,
+  idx: Record<string, MeshIndexEntry>,
+): string | null {
+  for (const [id, entry] of Object.entries(idx)) {
+    if (entry.meshes.some((m) => m.name === meshName)) return id
+  }
+  return null
+}
+
 export function MachineModel({ onIndex }: MachineModelProps) {
   const { scene } = useMachineGLTF()
+  const setHovered = useSelectionStore((s) => s.setHovered)
+  const { select } = useSelectedDevice()
+
   const index = useMemo(
     () => buildDeviceMeshIndex(scene, allDevices().map((d) => d.meta)),
     [scene],
@@ -27,7 +47,29 @@ export function MachineModel({ onIndex }: MachineModelProps) {
     }
   }, [index, onIndex])
 
-  return <primitive object={scene} />
+  function onPointerOver(e: ThreeEvent<PointerEvent>) {
+    e.stopPropagation()
+    const name = (e.object as { name?: string }).name ?? ''
+    setHovered(findDeviceIdForMesh(name, index))
+  }
+  function onPointerOut() {
+    setHovered(null)
+  }
+  function onClick(e: ThreeEvent<MouseEvent>) {
+    e.stopPropagation()
+    const name = (e.object as { name?: string }).name ?? ''
+    const id = findDeviceIdForMesh(name, index)
+    if (id) select(id)
+  }
+
+  return (
+    <primitive
+      object={scene}
+      onPointerOver={onPointerOver}
+      onPointerOut={onPointerOut}
+      onClick={onClick}
+    />
+  )
 }
 
 export function MachineModelSuspense(props: MachineModelProps) {

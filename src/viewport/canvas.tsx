@@ -5,6 +5,7 @@ import { Box3, MathUtils, Mesh, PerspectiveCamera as ThreePerspectiveCamera, Vec
 import { useSelectionStore } from '@/store/selection-store'
 import { useMachineGLTF } from './assets'
 import { MachineModelSuspense } from './machine-model'
+import { SelectionOutline } from './outline'
 import { PerfHud } from './helpers/perf-hud'
 
 // ─── Camera geometry ──────────────────────────────────────────────────────
@@ -154,7 +155,9 @@ function Scene() {
       <Environment preset="studio" background={false} />
       <ambientLight intensity={0.6} />
       <directionalLight position={[6, 10, 4]} intensity={1.1} castShadow={false} />
-      <MachineModelSuspense onIndex={setMeshIndex} />
+      <SelectionOutline>
+        <MachineModelSuspense onIndex={setMeshIndex} />
+      </SelectionOutline>
       <ContactShadows position={[0, 0, 0]} opacity={0.35} blur={2.5} far={4} />
       <PerfHud />
     </>
