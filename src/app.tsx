@@ -90,7 +90,7 @@ export default function App() {
         <div className="absolute inset-0 grid place-items-center text-[var(--text-muted)]">
           Viewport
         </div>
-        <aside className="pointer-events-auto absolute top-4 left-4 z-10">
+        <aside className="pointer-events-auto absolute top-4 bottom-4 left-4 z-10">
           <LeftPanel />
         </aside>
       </section>

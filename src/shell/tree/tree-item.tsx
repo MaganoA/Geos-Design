@@ -23,18 +23,15 @@ export function TreeItem({ meta, depth, selected, hasChildren, expanded, onToggl
       onMouseLeave={() => onHover(null)}
       onClick={(e) => {
         const onCaret = (e.target as HTMLElement).dataset.role === 'toggle'
-        if (isCategory) {
-          // Caret toggles. Row click *only expands* — never collapses, so
-          // operators always reveal the children instead of accidentally hiding them.
-          if (onCaret) onToggle()
-          else if (!expanded) onToggle()
+        if (onCaret) {
+          // Caret is the only way to collapse — full toggle.
+          onToggle()
           return
         }
-        if (hasChildren && onCaret) {
-          onToggle()
-        } else {
-          onSelect()
-        }
+        // Row click on any parent expands (never collapses) so operators
+        // can't accidentally hide children mid-flow.
+        if (hasChildren && !expanded) onToggle()
+        if (!isCategory) onSelect()
       }}
       className={[
         'flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition',
