@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import LogoApp from '@/icons/logo-app.svg?react'
-import UserIcon from '@/icons/user.svg?react'
-import Eye from '@/icons/eye.svg?react'
-import EyeSlash from '@/icons/eye-slash.svg?react'
+import Sidebar from '@/icons/sidebar.svg?react'
 import { TopBar } from '@/shell/top-bar'
+import { Avatar } from '@/components/primitives/avatar'
 import { TopBarPreviewShell, PREVIEW_HOP } from './topbar-shell'
 
 export function TopBarVariantB() {
@@ -12,8 +11,9 @@ export function TopBarVariantB() {
     <TopBarPreviewShell
       variantLabel="B · Padded inset card (toggle next to avatar, Figma-aligned)"
       hop={PREVIEW_HOP}
-      topBarRowHeight={collapsed ? 0 : 140}
-      topBarCellStyle={{ padding: collapsed ? 0 : '16px 16px 0 16px' }}
+      // 124 (card) + 16 (top padding) + 16 (bottom padding) = 156
+      topBarRowHeight={collapsed ? 0 : 156}
+      topBarCellStyle={{ padding: collapsed ? 0 : '16px 16px 16px 16px' }}
       railSlot={<CustomRail collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />}
       rowsTransition="grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1), padding 280ms cubic-bezier(0.16, 1, 0.3, 1)"
       topBarSlot={
@@ -48,14 +48,19 @@ function CustomRail({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
           aria-pressed={!collapsed}
           className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] hover:bg-[var(--border-mute)] hover:text-[var(--icon-default)]"
         >
-          {collapsed ? <EyeSlash className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+          {/* Sidebar rotated 90° = top-panel pictogram */}
+          <Sidebar className="h-5 w-5 rotate-90" />
         </button>
         <button
           type="button"
-          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] hover:bg-[var(--border-mute)] hover:text-[var(--icon-default)]"
+          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] hover:bg-[var(--border-mute)]"
           aria-label="Account"
         >
-          <UserIcon className="h-5 w-5" />
+          <Avatar
+            src="https://i.pravatar.cc/64?u=andrea-mangano"
+            initials="AM"
+            size={32}
+          />
         </button>
       </div>
     </div>
