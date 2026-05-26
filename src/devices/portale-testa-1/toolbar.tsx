@@ -56,7 +56,7 @@ function ModeButton({
       disabled={disabled}
       onClick={() => dispatch(command, deviceId)}
       className={cn(
-        'relative flex h-[52px] min-w-[156px] items-center justify-center rounded-[var(--radius-md)] px-6 text-[14px] font-medium transition-all',
+        'flex h-[52px] min-w-[156px] items-center justify-center gap-2 rounded-[var(--radius-md)] px-5 text-[14px] font-medium transition-all',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--text-default)]',
         'disabled:cursor-not-allowed disabled:opacity-50',
         active
@@ -69,14 +69,14 @@ function ModeButton({
           : { boxShadow: 'inset 0 0 0 1px var(--border-default)' }
       }
     >
-      {command.label}
       {active && (
         <span
           aria-hidden
-          className="absolute top-2 right-2.5 h-1.5 w-1.5 rounded-full bg-emerald-400"
-          style={{ boxShadow: '0 0 6px rgb(74 222 128 / 0.7)' }}
+          className="h-2 w-2 shrink-0 rounded-full bg-emerald-400"
+          style={{ boxShadow: '0 0 6px rgb(74 222 128 / 0.65)' }}
         />
       )}
+      <span>{command.label}</span>
     </button>
   )
 }

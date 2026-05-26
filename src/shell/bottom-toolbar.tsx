@@ -22,20 +22,22 @@ export function BottomToolbar() {
 
   const { Toolbar } = device
   return (
-    <div className="grid h-full place-items-center px-5">
-      <div
-        className="grid h-[68px] min-w-[348px] place-items-center rounded-[var(--radius-xl)] bg-[var(--bg-default)] px-6"
-        style={{
-          boxShadow: 'var(--shadow-demo)',
-          opacity: shown ? 1 : 0,
-          transform: shown ? 'translateY(0)' : 'translateY(8px)',
-          transition:
-            'opacity 220ms cubic-bezier(0.16, 1, 0.3, 1), transform 260ms cubic-bezier(0.16, 1, 0.3, 1)',
-          willChange: 'opacity, transform',
-        }}
-      >
-        <Toolbar />
-      </div>
+    // Card sizes to content — 8 px padding all around the buttons,
+    // matching the 8 px gap between them. The asymmetric 24 H / 8 V
+    // padding the toolbar shipped with read as "off centre" because
+    // the buttons drifted horizontally more than they did vertically.
+    <div
+      className="flex items-center rounded-[var(--radius-xl)] bg-[var(--bg-default)] p-2"
+      style={{
+        boxShadow: 'var(--shadow-demo)',
+        opacity: shown ? 1 : 0,
+        transform: shown ? 'translateY(0)' : 'translateY(8px)',
+        transition:
+          'opacity 220ms cubic-bezier(0.16, 1, 0.3, 1), transform 260ms cubic-bezier(0.16, 1, 0.3, 1)',
+        willChange: 'opacity, transform',
+      }}
+    >
+      <Toolbar />
     </div>
   )
 }
