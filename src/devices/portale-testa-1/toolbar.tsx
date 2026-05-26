@@ -69,13 +69,23 @@ function ModeButton({
           : { boxShadow: 'inset 0 0 0 1px var(--border-default)' }
       }
     >
-      {active && (
-        <span
-          aria-hidden
-          className="h-2 w-2 shrink-0 rounded-full bg-emerald-400"
-          style={{ boxShadow: '0 0 6px rgb(74 222 128 / 0.65)' }}
-        />
-      )}
+      {/*
+        The dot is always rendered so the label sits in the same
+        horizontal position on every button — only its colour
+        communicates state. Grey when off, emerald when on.
+      */}
+      <span
+        aria-hidden
+        className={cn(
+          'h-2 w-2 shrink-0 rounded-full transition-colors',
+          active ? 'bg-emerald-400' : 'bg-stone-300',
+        )}
+        style={
+          active
+            ? { boxShadow: '0 0 6px rgb(74 222 128 / 0.65)' }
+            : undefined
+        }
+      />
       <span>{command.label}</span>
     </button>
   )
