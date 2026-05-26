@@ -98,4 +98,5 @@ export const PREVIEW_HOP = [
   { href: '/?preview=topbar-a', label: 'A · Status dots' },
   { href: '/?preview=topbar-b', label: 'B · Padded card' },
   { href: '/?preview=topbar-c', label: 'C · Mini-strip' },
+  { href: '/?preview=topbar-d', label: 'D · Full width' },
 ]

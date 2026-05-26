@@ -8,6 +8,7 @@ import { TopBarHandle } from './shell/topbar-handle'
 import { TopBarVariantA } from './preview/topbar-a'
 import { TopBarVariantB } from './preview/topbar-b'
 import { TopBarVariantC } from './preview/topbar-c'
+import { TopBarVariantD } from './preview/topbar-d'
 
 const TOP_BAR_HEIGHT = 124
 
@@ -17,6 +18,7 @@ export default function App() {
     if (preview === 'topbar-a') return <TopBarVariantA />
     if (preview === 'topbar-b') return <TopBarVariantB />
     if (preview === 'topbar-c') return <TopBarVariantC />
+    if (preview === 'topbar-d') return <TopBarVariantD />
   }
 
   const [topBarCollapsed, setTopBarCollapsed] = useState(false)
