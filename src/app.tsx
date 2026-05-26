@@ -5,10 +5,20 @@ import { LeftPanel } from './shell/left-panel'
 import { RightPanel } from './shell/right-panel'
 import { BottomToolbar } from './shell/bottom-toolbar'
 import { TopBarHandle } from './shell/topbar-handle'
+import { TopBarVariantA } from './preview/topbar-a'
+import { TopBarVariantB } from './preview/topbar-b'
+import { TopBarVariantC } from './preview/topbar-c'
 
 const TOP_BAR_HEIGHT = 124
 
 export default function App() {
+  if (typeof window !== 'undefined') {
+    const preview = new URLSearchParams(window.location.search).get('preview')
+    if (preview === 'topbar-a') return <TopBarVariantA />
+    if (preview === 'topbar-b') return <TopBarVariantB />
+    if (preview === 'topbar-c') return <TopBarVariantC />
+  }
+
   const [topBarCollapsed, setTopBarCollapsed] = useState(false)
 
   return (
@@ -25,10 +35,7 @@ export default function App() {
         `,
       }}
     >
-      <aside
-        style={{ gridArea: 'rail' }}
-        className="border-r border-[var(--border-mute)] bg-[var(--bg-default)]"
-      >
+      <aside style={{ gridArea: 'rail' }} className="bg-transparent">
         <LeftRail />
       </aside>
       <header

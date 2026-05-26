@@ -1,6 +1,6 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
-import { ChevronDown } from 'lucide-react'
+import CaretDown from '@/icons/caret-down.svg?react'
 
 export function LeftPanel() {
   return (
@@ -16,7 +16,7 @@ export function LeftPanel() {
           >
             FlexPin
           </span>
-          <ChevronDown size={20} className="text-[var(--icon-default-subtle)]" />
+          <CaretDown className="h-5 w-5 text-[var(--icon-default-subtle)]" />
         </button>
         <Badge className="self-start bg-[var(--bg-badge-green)] text-[var(--text-success)] hover:bg-[var(--bg-badge-green)]">
           <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-[var(--status-active)]" />
