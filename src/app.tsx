@@ -12,6 +12,7 @@ import { TopBarVariantC } from './preview/topbar-c'
 import { TopBarVariantD } from './preview/topbar-d'
 import { Viewport } from './viewport/canvas'
 import { useSelectedDevice } from './hooks/use-selected-device'
+import { useRegisterPortaleTesta1 } from './devices/portale-testa-1/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
@@ -45,6 +46,10 @@ export default function App() {
 
   const [topBarCollapsed, setTopBarCollapsed] = useState(false)
   const t = topBarCollapsed ? TRANSITION_CLOSE : TRANSITION_OPEN
+
+  // Seed Portale Testa 1's live state and subscribe to the 100 ms tick.
+  // Other devices will add their own register-hooks in later milestones.
+  useRegisterPortaleTesta1()
 
   // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
   // absorbs the freed width, so the 3D Canvas grows into it. The whole
