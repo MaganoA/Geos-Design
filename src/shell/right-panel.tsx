@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import XIcon from '@/icons/x.svg?react'
 import { StatusBadge } from '@/components/primitives/status-badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { useDeviceState } from '@/hooks/use-device-state'
 import { useSelectedDevice } from '@/hooks/use-selected-device'
 import type { DeviceStatus } from '@/types/device'
@@ -45,7 +46,12 @@ export function RightPanel() {
   const { Panel, meta } = device
   return (
     <div
-      className="m-4 ml-0 flex h-[calc(100%-2rem)] w-[calc(100%-1rem)] flex-col overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
+      // max-h-[calc(100%-2rem)] (not h-): the card sizes to its content
+      // and stops growing 16 px short of the column edges. flex-shrink
+      // on the header + scroll-area on the body means the body shrinks
+      // first when the content reaches that cap — title and badge
+      // always stay visible.
+      className="m-4 ml-0 flex max-h-[calc(100%-2rem)] w-[calc(100%-1rem)] flex-col overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
       style={{
         boxShadow: 'var(--shadow-base)',
         opacity: shown ? 1 : 0,
@@ -55,7 +61,7 @@ export function RightPanel() {
         willChange: 'opacity, transform',
       }}
     >
-      <header className="flex items-start justify-between gap-3 px-5 pt-4 pb-3">
+      <header className="flex flex-shrink-0 items-start justify-between gap-3 px-5 pt-4 pb-3">
         <div className="flex flex-col gap-2">
           <span className="text-lg font-medium leading-tight">{meta.label}</span>
           {status && (
@@ -71,9 +77,16 @@ export function RightPanel() {
           <XIcon className="h-5 w-5" />
         </button>
       </header>
-      <div className="flex-1 overflow-auto">
+      {/*
+        No flex-1: ScrollArea sizes to its content by default and the
+        outer card collapses to the natural height. When the content
+        exceeds the max-h cap, flex-shrink kicks in and the ScrollArea
+        compresses while Radix's Viewport keeps the inner Panel
+        scrollable. type="scroll" hides the scrollbar until use.
+      */}
+      <ScrollArea type="scroll" className="min-h-0">
         <Panel label={meta.label} />
-      </div>
+      </ScrollArea>
     </div>
   )
 }
