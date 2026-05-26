@@ -7,6 +7,10 @@ export const portaleTesta1Schema = z.object({
   label: z.string(),
   parentId: z.string().nullable(),
   status: z.enum(['active', 'idle', 'warning', 'error', 'offline']),
+  // Exclusive operating mode. 'operativa' is the working state;
+  // 'riposo-1' / 'riposo-2' park the head at fixed positions and
+  // suppress the random target drift in applyTick.
+  mode: z.enum(['operativa', 'riposo-1', 'riposo-2']),
   codiceStato: z.string().optional(),
   codiceErrori: z.array(z.string()).optional(),
   position: z.object({ x: z.number(), y: z.number(), z: z.number() }),
@@ -38,6 +42,7 @@ export const initialState: PortaleTesta1State = {
   label: 'Testa 1',
   parentId: 'portale',
   status: 'active',
+  mode: 'operativa',
   codiceStato: 'OK',
   codiceErrori: [],
   position: { x: 1264.0, y: 514.2, z: 92.0 },
@@ -66,8 +71,10 @@ export function applyTick(prev: PortaleTesta1State, dtMs: number): PortaleTesta1
   secsSinceTargetRoll += dt
   secsSinceForoBump += dt
 
+  // While parked (riposo-1 / riposo-2) the operator commanded a fixed
+  // target; we don't roll a new random one. Only Operativa drifts.
   let posT = prev.positionTarget
-  if (secsSinceTargetRoll >= 4) {
+  if (prev.mode === 'operativa' && secsSinceTargetRoll >= 4) {
     secsSinceTargetRoll = 0
     posT = {
       x: prev.position.x + (Math.random() - 0.5) * 4,

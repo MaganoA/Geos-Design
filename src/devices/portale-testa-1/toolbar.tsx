@@ -1,12 +1,82 @@
-import { CommandButton } from '@/components/patterns/command-button'
-import { commands } from './commands'
+import { useCommandDispatch } from '@/hooks/use-command-dispatch'
+import { useDeviceState } from '@/hooks/use-device-state'
+import { canRunCommand } from '@/lib/role-gate'
+import { cn } from '@/lib/cn'
+import { useModeStore } from '@/store/mode-store'
+import { useRoleStore } from '@/store/role-store'
+import type { Command } from '@/types/command'
+import { commands, COMMAND_MODE } from './commands'
+import type { PortaleTesta1State } from './state'
 
 export function Toolbar() {
+  const state = useDeviceState<PortaleTesta1State>('portale-testa-1')
+  const currentMode = state?.mode ?? 'operativa'
+
   return (
-    <div className="flex h-full items-center justify-center gap-3">
+    <div className="flex h-full items-center justify-center gap-2">
       {commands.map((c) => (
-        <CommandButton key={c.id} command={c} deviceId="portale-testa-1" />
+        <ModeButton
+          key={c.id}
+          command={c}
+          deviceId="portale-testa-1"
+          active={COMMAND_MODE[c.id] === currentMode}
+        />
       ))}
     </div>
+  )
+}
+
+/**
+ * A mode-toggle button. Outlined when off; charcoal-filled with a
+ * small emerald LED (top-right) when the device is in this mode.
+ * The LED is the only chrome that signals "engaged" — the surface
+ * itself reads as a solid pressed-in button.
+ */
+function ModeButton({
+  command,
+  deviceId,
+  active,
+}: {
+  command: Command
+  deviceId: string
+  active: boolean
+}) {
+  const { dispatch } = useCommandDispatch()
+  const role = useRoleStore((s) => s.role)
+  const mode = useModeStore((s) => s.mode)
+  const disabled =
+    !canRunCommand(command, role) || (command.manualOnly && mode !== 'manuale')
+
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={active}
+      aria-label={command.label}
+      disabled={disabled}
+      onClick={() => dispatch(command, deviceId)}
+      className={cn(
+        'relative flex h-[52px] min-w-[156px] items-center justify-center rounded-[var(--radius-md)] px-6 text-[14px] font-medium transition-all',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--text-default)]',
+        'disabled:cursor-not-allowed disabled:opacity-50',
+        active
+          ? 'bg-[var(--text-default)] text-white active:scale-[0.985]'
+          : 'bg-[var(--bg-default)] text-[var(--text-default)] hover:bg-[var(--bg-muted)] active:scale-[0.985]',
+      )}
+      style={
+        active
+          ? undefined
+          : { boxShadow: 'inset 0 0 0 1px var(--border-default)' }
+      }
+    >
+      {command.label}
+      {active && (
+        <span
+          aria-hidden
+          className="absolute top-2 right-2.5 h-1.5 w-1.5 rounded-full bg-emerald-400"
+          style={{ boxShadow: '0 0 6px rgb(74 222 128 / 0.7)' }}
+        />
+      )}
+    </button>
   )
 }

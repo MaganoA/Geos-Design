@@ -15,4 +15,16 @@ describe('portale-testa-1 tick', () => {
     const s = applyTick(initialState, 100)
     expect(s.lavorazione?.idLavoro).toBe(initialState.lavorazione?.idLavoro)
   })
+  it('does not roll a new random target while parked', () => {
+    const parked: PortaleTesta1State = {
+      ...initialState,
+      mode: 'riposo-1',
+      position: { x: 0, y: 0, z: 0 },
+      positionTarget: { x: 0, y: 0, z: 0 },
+    }
+    // Run many ticks; the parked target should stay fixed.
+    let s = parked
+    for (let i = 0; i < 200; i++) s = applyTick(s, 100)
+    expect(s.positionTarget).toEqual({ x: 0, y: 0, z: 0 })
+  })
 })

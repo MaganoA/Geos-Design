@@ -8,7 +8,7 @@ test('Portale Testa 1: select → panel → command → close', async ({ page })
 
   // Riposo 1 command should set positionTarget to (0,0,0) and the tick
   // should animate X downward from its initial ~1264 value.
-  await page.getByRole('button', { name: 'Riposo 1' }).click()
+  await page.getByRole('switch', { name: 'Riposo 1' }).click()
   await page.waitForFunction(
     () => {
       const nodes = Array.from(document.querySelectorAll('span'))
