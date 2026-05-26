@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test'
 
 test('Portale Testa 1: select → panel → command → close', async ({ page }) => {
   await page.goto('/?device=portale-testa-1')
-  await expect(page.getByText('Coordinate')).toBeVisible()
-  await expect(page.getByText('Sistema di insertatura')).toBeVisible()
+  await expect(page.getByText('Posizione')).toBeVisible()
+  await expect(page.getByText('Lavorazione in corso')).toBeVisible()
   await expect(page.getByText('JOB-0430', { exact: true })).toBeVisible()
 
   // Riposo 1 command should set positionTarget to (0,0,0) and the tick

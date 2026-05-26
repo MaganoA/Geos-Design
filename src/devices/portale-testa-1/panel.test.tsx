@@ -5,13 +5,13 @@ import { initialState } from './state'
 import { Panel } from './panel'
 
 describe('PortaleTesta1 Panel', () => {
-  it('renders coordinate, insertatura, tenuta, erogatore sections', () => {
+  it('renders Stato, Posizione, and Lavorazione sections', () => {
     useMachineStore.getState().setDevice('portale-testa-1', initialState)
     render(<Panel />)
-    expect(screen.getByText('Coordinate')).toBeInTheDocument()
-    expect(screen.getByText('Sistema di insertatura')).toBeInTheDocument()
-    expect(screen.getByText('Sistema di prova tenuta')).toBeInTheDocument()
-    expect(screen.getByText('Erogatore (resina)')).toBeInTheDocument()
+    expect(screen.getByText('Stato')).toBeInTheDocument()
+    expect(screen.getByText('Posizione')).toBeInTheDocument()
+    expect(screen.getByText('Lavorazione in corso')).toBeInTheDocument()
     expect(screen.getByText('JOB-0430')).toBeInTheDocument()
+    expect(screen.getByText('LAV-2403-04')).toBeInTheDocument()
   })
 })

@@ -14,6 +14,7 @@ export const portaleTesta1Schema = z.object({
   lavorazione: z
     .object({
       idLavoro: z.string(),
+      idLavorazione: z.string(),
       idLastra: z.string(),
       indiceForo: z.string(),
       inizio: z.number(),
@@ -37,14 +38,17 @@ export const initialState: PortaleTesta1State = {
   label: 'Testa 1',
   parentId: 'portale',
   status: 'active',
+  codiceStato: 'OK',
+  codiceErrori: [],
   position: { x: 1264.0, y: 514.2, z: 92.0 },
   positionTarget: { x: 1264.0, y: 514.2, z: 92.0 },
   lavorazione: {
     idLavoro: 'JOB-0430',
+    idLavorazione: 'LAV-2403-04',
     idLastra: 'L-2403-117',
     indiceForo: 'F-023',
-    inizio: Date.now(),
-    finePrec: null,
+    inizio: Date.now() - 12 * 60 * 1000,
+    finePrec: Date.now() - 22 * 60 * 1000,
   },
   tenuta: { codiceStato: 'OK', livelloDepressione: 0.82, modalita: 'aspirazione' },
   erogatore: { stato: 'chiuso' },
