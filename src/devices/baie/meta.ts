@@ -3,4 +3,5 @@ export const meta: DeviceMeta = {
   id: 'baie',
   label: 'Baie',
   parentId: null,
+  selectable: false,
 }

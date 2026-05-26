@@ -71,7 +71,7 @@ export default function App() {
         }}
       >
         <div
-          className="h-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-default)]"
+          className="h-full overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
           style={{
             boxShadow: 'var(--shadow-base)',
             opacity: topBarCollapsed ? 0 : 1,

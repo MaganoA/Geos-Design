@@ -39,7 +39,9 @@ export function DeviceTree() {
                 return next
               })
             }
-            onSelect={() => select(meta.id)}
+            onSelect={() => {
+              if (meta.selectable !== false) select(meta.id)
+            }}
             onHover={setHovered}
           />
           {hasChildren && isOpen && render(meta.id, depth + 1)}

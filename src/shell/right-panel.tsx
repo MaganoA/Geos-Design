@@ -4,11 +4,13 @@ import { useSelectedDevice } from '@/hooks/use-selected-device'
 export function RightPanel() {
   const { device, clear } = useSelectedDevice()
   if (!device) return null
+  // Devices without their own state (e.g. Tool stand) don't get a right panel.
+  if (device.meta.hasData === false) return null
 
   const { Panel, meta } = device
   return (
     <div
-      className="m-4 ml-0 flex h-[calc(100%-2rem)] w-[calc(100%-1rem)] flex-col overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-default)]"
+      className="m-4 ml-0 flex h-[calc(100%-2rem)] w-[calc(100%-1rem)] flex-col overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
       style={{ boxShadow: 'var(--shadow-base)' }}
     >
       <header className="flex items-center justify-between border-b border-[var(--border-mute)] px-5 py-4">

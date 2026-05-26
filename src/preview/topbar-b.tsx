@@ -35,7 +35,7 @@ export function TopBarVariantB() {
       rowsTransition={t.gridRows}
       topBarSlot={
         <div
-          className="h-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-default)]"
+          className="h-full overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
           style={{
             boxShadow: 'var(--shadow-base)',
             opacity: collapsed ? 0 : 1,

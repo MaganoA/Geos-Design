@@ -3,4 +3,5 @@ export const meta: DeviceMeta = {
   id: 'piani-aspirati',
   label: 'Piani aspirati',
   parentId: null,
+  selectable: false,
 }
