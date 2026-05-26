@@ -1,13 +1,21 @@
+import { useDeviceState } from '@/hooks/use-device-state'
+import { useSelectedDevice } from '@/hooks/use-selected-device'
+import type { PortaleTesta1State } from '@/devices/portale-testa-1/state'
+
 interface ChipProps {
   label: string
   primary: string
+  deviceId?: string
   secondaryItems?: string[]
 }
 
-function Chip({ label, primary, secondaryItems = [] }: ChipProps) {
+function Chip({ label, primary, deviceId, secondaryItems = [] }: ChipProps) {
+  const { select } = useSelectedDevice()
   const tags = secondaryItems.filter((s) => !s.startsWith('Visualizza'))
-  return (
-    <div className="flex min-w-[260px] flex-col gap-3 border-r border-[var(--border-mute)] px-6 py-5">
+  const interactive = !!deviceId
+
+  const content = (
+    <>
       <div className="flex flex-col gap-1">
         <span className="text-xs font-medium text-[var(--text-muted)]">
           {label}
@@ -28,11 +36,38 @@ function Chip({ label, primary, secondaryItems = [] }: ChipProps) {
           ))}
         </div>
       )}
-    </div>
+    </>
+  )
+
+  const baseClass =
+    'flex min-w-[260px] flex-col gap-3 border-r border-[var(--border-mute)] px-6 py-5 text-left'
+
+  if (!interactive) {
+    return <div className={baseClass}>{content}</div>
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => select(deviceId)}
+      className={`${baseClass} transition-colors hover:bg-[var(--bg-muted)]`}
+    >
+      {content}
+    </button>
   )
 }
 
 export function TopBar() {
+  // Portale Testa 1 is the only device with a live state schema in this
+  // milestone. The other chips remain static until their devices land.
+  const testa1 = useDeviceState<PortaleTesta1State>('portale-testa-1')
+  const testa1Primary = testa1?.lavorazione
+    ? `${testa1.lavorazione.idLavoro} - Insertatura`
+    : 'L12 - Insertatura'
+  const testa1Tags = [
+    testa1?.lavorazione?.idLastra ?? 'Lastra 1',
+    testa1?.lavorazione?.indiceForo ?? 'Foro 2',
+  ]
+
   return (
     <div className="flex h-full items-stretch">
       <Chip
@@ -40,10 +75,30 @@ export function TopBar() {
         primary="Lastra 1500x450x6 Gress Rosso"
         secondaryItems={['F3Y1080.1', 'Flex 3', 'Visualizza Ordini']}
       />
-      <Chip label="Robot" primary="L12 - Insertatura" secondaryItems={['Lastra 1', 'Foro 2']} />
-      <Chip label="Portale - Testa 1" primary="L12 - Insertatura" secondaryItems={['Lastra 1', 'Foro 2']} />
-      <Chip label="Portale - Testa 2" primary="L12 - Insertatura" secondaryItems={['Lastra 1', 'Foro 2']} />
-      <Chip label="Speed" primary="L1 - Foratura" secondaryItems={['Lastra 1', 'Foro 2']} />
+      <Chip
+        label="Robot"
+        primary="L12 - Insertatura"
+        deviceId="robot"
+        secondaryItems={['Lastra 1', 'Foro 2']}
+      />
+      <Chip
+        label="Portale - Testa 1"
+        primary={testa1Primary}
+        deviceId="portale-testa-1"
+        secondaryItems={testa1Tags}
+      />
+      <Chip
+        label="Portale - Testa 2"
+        primary="L12 - Insertatura"
+        deviceId="portale-testa-2"
+        secondaryItems={['Lastra 1', 'Foro 2']}
+      />
+      <Chip
+        label="Speed"
+        primary="L1 - Foratura"
+        deviceId="speed"
+        secondaryItems={['Lastra 1', 'Foro 2']}
+      />
     </div>
   )
 }
