@@ -1,5 +1,3 @@
-import { Badge } from '@/components/ui/badge'
-
 interface ChipProps {
   label: string
   primary: string
@@ -7,24 +5,24 @@ interface ChipProps {
 }
 
 function Chip({ label, primary, secondaryItems = [] }: ChipProps) {
+  const tags = secondaryItems.filter((s) => !s.startsWith('Visualizza'))
   return (
-    <div className="flex min-w-[228px] flex-col gap-3 border-r border-[var(--border-mute)] px-6 py-5">
-      <span className="text-xs font-medium uppercase tracking-widest text-[var(--text-muted)]">
+    <div className="flex min-w-[260px] flex-col gap-3 border-r border-[var(--border-mute)] px-6 py-5">
+      <span className="text-2xs font-medium uppercase tracking-widest text-[var(--text-muted)]">
         {label}
       </span>
-      <span className="truncate text-base font-medium text-[var(--text-default)]">
+      <span className="text-base font-medium leading-snug text-[var(--text-default)]">
         {primary}
       </span>
-      {secondaryItems.length > 0 && (
+      {tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          {secondaryItems.map((s) => (
-            <Badge
+          {tags.map((s) => (
+            <span
               key={s}
-              variant="secondary"
-              className="rounded-md px-2.5 py-1 text-sm font-normal text-[var(--text-default)]"
+              className="rounded-sm bg-[var(--bg-muted)] px-2 py-0.5 text-xs font-medium tracking-wide text-[var(--text-subtle)]"
             >
               {s}
-            </Badge>
+            </span>
           ))}
         </div>
       )}
