@@ -9,7 +9,11 @@ export function useCommandDispatch() {
   const mode = useModeStore((s) => s.mode)
 
   const dispatch = useCallback(
-    async (cmd: Command, deviceId: string) => {
+    async (
+      cmd: Command,
+      deviceId: string,
+      extra?: { value?: number },
+    ) => {
       if (!canRunCommand(cmd, role)) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -18,7 +22,7 @@ export function useCommandDispatch() {
         return
       }
       if (cmd.manualOnly && mode !== 'manuale') return
-      await cmd.handler({ deviceId, role, mode })
+      await cmd.handler({ deviceId, role, mode, value: extra?.value })
     },
     [role, mode],
   )
