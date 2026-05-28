@@ -18,6 +18,7 @@ import { useRegisterPortaleTesta1Tenuta } from './devices/portale-testa-1-tenuta
 import { useRegisterPortaleTesta1Erogatore } from './devices/portale-testa-1-erogatore/register'
 import { useRegisterPortaleTesta2 } from './devices/portale-testa-2/register'
 import { useRegisterPortaleTesta2GripperPin } from './devices/portale-testa-2-gripper-pin/register'
+import { useRegisterPortaleTesta2LampadeUv } from './devices/portale-testa-2-lampade-uv/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
@@ -51,6 +52,7 @@ export default function App() {
   useRegisterPortaleTesta1Erogatore()
   useRegisterPortaleTesta2()
   useRegisterPortaleTesta2GripperPin()
+  useRegisterPortaleTesta2LampadeUv()
 
   // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
   // absorbs the freed width, so the 3D Canvas grows into it. The whole
