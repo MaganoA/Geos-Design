@@ -11,7 +11,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { NumberInputDialog } from '@/components/patterns/number-input-dialog'
 import { useCommandDispatch } from '@/hooks/use-command-dispatch'
+import { useDeviceState } from '@/hooks/use-device-state'
 import { canRunCommand } from '@/lib/role-gate'
 import { useModeStore } from '@/store/mode-store'
 import { useRoleStore } from '@/store/role-store'
@@ -28,14 +30,43 @@ export function CommandButton({
   const role = useRoleStore((s) => s.role)
   const mode = useModeStore((s) => s.mode)
   const [open, setOpen] = useState(false)
+  const deviceState = useDeviceState<unknown>(deviceId)
 
-  // Two independent gates: role + mode. A command can be allowed by role
-  // but blocked because the machine isn't in manual mode (or vice-versa).
   const disabled =
     !canRunCommand(command, role) || (command.manualOnly && mode !== 'manuale')
 
   const buttonClass = 'h-[52px] min-w-[156px]'
 
+  // Value-input branch (numeric setpoint dialog).
+  if (command.requiresValueInput) {
+    const v = command.requiresValueInput
+    const initial = v.initial && deviceState
+      ? v.initial(deviceState)
+      : (v.min + v.max) / 2
+    return (
+      <NumberInputDialog
+        trigger={
+          <Button
+            disabled={disabled}
+            variant={command.destructive ? 'destructive' : 'default'}
+            className={buttonClass}
+          >
+            {command.label}
+          </Button>
+        }
+        title={command.label}
+        description={command.description}
+        min={v.min}
+        max={v.max}
+        step={v.step}
+        unit={v.unit}
+        initialValue={initial}
+        onConfirm={(value) => dispatch(command, deviceId, { value })}
+      />
+    )
+  }
+
+  // Confirm branch (AlertDialog).
   if (command.requiresConfirm) {
     return (
       <AlertDialog open={open} onOpenChange={setOpen}>
@@ -66,6 +97,7 @@ export function CommandButton({
     )
   }
 
+  // Instant branch.
   return (
     <Button
       disabled={disabled}
