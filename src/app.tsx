@@ -10,9 +10,12 @@ import { TopBarVariantA } from './preview/topbar-a'
 import { TopBarVariantB } from './preview/topbar-b'
 import { TopBarVariantC } from './preview/topbar-c'
 import { TopBarVariantD } from './preview/topbar-d'
+import { ToolbarVariants } from './preview/toolbar-variants'
 import { Viewport } from './viewport/canvas'
 import { useSelectedDevice } from './hooks/use-selected-device'
 import { useRegisterPortaleTesta1 } from './devices/portale-testa-1/register'
+import { useRegisterPortaleTesta1Tenuta } from './devices/portale-testa-1-tenuta/register'
+import { useRegisterPortaleTesta1Erogatore } from './devices/portale-testa-1-erogatore/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
@@ -36,25 +39,30 @@ const TRANSITION_CLOSE = {
 }
 
 export default function App() {
+  const [topBarCollapsed, setTopBarCollapsed] = useState(false)
+
+  // Seed live device state and subscribe to the 100 ms tick. Hooks must
+  // run unconditionally before any early return (the preview routing
+  // below), so they sit at the very top of the component.
+  useRegisterPortaleTesta1()
+  useRegisterPortaleTesta1Tenuta()
+  useRegisterPortaleTesta1Erogatore()
+
+  // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
+  // absorbs the freed width, so the 3D Canvas grows into it. The whole
+  // shell animates as a unit via grid-template-columns.
+  const { device } = useSelectedDevice()
+
   if (typeof window !== 'undefined') {
     const preview = new URLSearchParams(window.location.search).get('preview')
     if (preview === 'topbar-a') return <TopBarVariantA />
     if (preview === 'topbar-b') return <TopBarVariantB />
     if (preview === 'topbar-c') return <TopBarVariantC />
     if (preview === 'topbar-d') return <TopBarVariantD />
+    if (preview === 'toolbar-variants') return <ToolbarVariants />
   }
 
-  const [topBarCollapsed, setTopBarCollapsed] = useState(false)
   const t = topBarCollapsed ? TRANSITION_CLOSE : TRANSITION_OPEN
-
-  // Seed Portale Testa 1's live state and subscribe to the 100 ms tick.
-  // Other devices will add their own register-hooks in later milestones.
-  useRegisterPortaleTesta1()
-
-  // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
-  // absorbs the freed width, so the 3D Canvas grows into it. The whole
-  // shell animates as a unit via grid-template-columns.
-  const { device } = useSelectedDevice()
   const rightColVisible = !!device && device.meta.hasData !== false
 
   return (

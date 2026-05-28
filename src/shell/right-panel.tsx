@@ -62,7 +62,7 @@ export function RightPanel() {
       }}
     >
       <header className="flex flex-shrink-0 items-start justify-between gap-3 px-5 pt-4 pb-3">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-start gap-2">
           <span className="text-lg font-medium leading-tight">{meta.label}</span>
           {status && (
             <StatusBadge status={status}>{STATUS_LABELS[status]}</StatusBadge>
