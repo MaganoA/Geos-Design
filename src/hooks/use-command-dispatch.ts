@@ -15,7 +15,7 @@ export function useCommandDispatch() {
       extra?: { value?: number },
     ) => {
       if (!canRunCommand(cmd, role)) {
-        // eslint-disable-next-line no-console
+         
         console.warn(
           `[command] denied: ${cmd.id} requires ${cmd.requiredRole}, current is ${role}`,
         )
