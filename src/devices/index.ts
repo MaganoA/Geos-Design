@@ -66,6 +66,8 @@ import { Panel as PortaleTesta1ErogatorePanel } from './portale-testa-1-erogator
 import { Toolbar as PortaleTesta1ErogatoreToolbar } from './portale-testa-1-erogatore/toolbar'
 import { Panel as PortaleTesta2Panel } from './portale-testa-2/panel'
 import { Toolbar as PortaleTesta2Toolbar } from './portale-testa-2/toolbar'
+import { Panel as PortaleTesta2GripperPinPanel } from './portale-testa-2-gripper-pin/panel'
+import { Toolbar as PortaleTesta2GripperPinToolbar } from './portale-testa-2-gripper-pin/toolbar'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
@@ -107,7 +109,11 @@ const registry: Record<string, RegisteredDevice> = {
     Panel: PortaleTesta2Panel as React.ComponentType<{ label: string }>,
     Toolbar: PortaleTesta2Toolbar,
   },
-  'portale-testa-2-gripper-pin': entry(portaleTesta2GripperPinMeta.meta),
+  'portale-testa-2-gripper-pin': {
+    meta: portaleTesta2GripperPinMeta.meta,
+    Panel: PortaleTesta2GripperPinPanel as React.ComponentType<{ label: string }>,
+    Toolbar: PortaleTesta2GripperPinToolbar,
+  },
   'portale-testa-2-lampade-uv':  entry(portaleTesta2LampadeUvMeta.meta),
 
   // Robot, Dispenser (root)
