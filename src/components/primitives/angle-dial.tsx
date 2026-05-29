@@ -102,11 +102,13 @@ export function AngleDial({
   const valueFontPx = Math.max(12, Math.round(size * 0.21))
   const labelFontPx = Math.max(10, Math.round(size * 0.095))
 
-  // Restrained accent: one cool blue, two tones. The pale tone tints
-  // the pill so it overlays the ring without dominating; the deep tone
-  // carries the triangle so the eye finds it first.
-  const pillFill = 'oklch(0.88 0.04 250)'
-  const markerFill = 'oklch(0.50 0.18 250)'
+  // Restrained accent: the project's brand blue, two tones. Pale tint
+  // (--accent-soft) on the pill so it overlays the ring without
+  // dominating; saturated (--accent) on the triangle so the eye finds
+  // the leading edge first. Same token the RangeBarRow fills with,
+  // keeping every "this is live data" cue across the HMI on one hue.
+  const pillFill = 'var(--accent-soft)'
+  const markerFill = 'var(--accent)'
 
   return (
     <div

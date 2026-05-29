@@ -22,6 +22,12 @@ describe('Speed Panel', () => {
     expect(screen.getByText('T12')).toBeInTheDocument()
     expect(screen.getByText('45.5°')).toBeInTheDocument()
     expect(screen.getByText('12.0°')).toBeInTheDocument()
-    expect(screen.getByText('248 mm/s')).toBeInTheDocument()
+    // Velocità is now a RangeBarRow: value and unit live in separate
+    // spans, plus a progressbar role with the geometric truth.
+    expect(screen.getByText('248')).toBeInTheDocument()
+    expect(screen.getByText('mm/s')).toBeInTheDocument()
+    expect(
+      screen.getByRole('progressbar', { name: 'Velocità relazionale' }),
+    ).toHaveAttribute('aria-valuenow', '248')
   })
 })

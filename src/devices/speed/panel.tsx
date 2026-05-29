@@ -1,9 +1,16 @@
 import { DataRow } from '@/components/patterns/data-row'
 import { DataSection } from '@/components/patterns/data-section'
+import { RangeBarRow } from '@/components/patterns/range-bar-row'
 import { AngleDial } from '@/components/primitives/angle-dial'
 import { useDeviceState } from '@/hooks/use-device-state'
 import { formatMm, formatTime } from '@/lib/format'
 import type { SpeedState } from './state'
+
+// Nominal machine range for velocità relazionale. The state oscillates
+// around 250 ± 35 mm/s, so 0–500 puts the bar at mid-scale during
+// normal operation and leaves clear headroom for deviations.
+const VELOCITA_MIN = 0
+const VELOCITA_MAX = 500
 
 export function Panel() {
   const s = useDeviceState<SpeedState>('speed')
@@ -13,9 +20,12 @@ export function Panel() {
     <div className="flex flex-col gap-3 px-3 pt-1 pb-3">
       <DataSection title="Macchinario">
         <DataRow label="Data/ora" value={formatTime(s.dataOra)} />
-        <DataRow
+        <RangeBarRow
           label="Velocità relazionale"
-          value={`${Math.round(s.velocitaRelazionale)} mm/s`}
+          value={s.velocitaRelazionale}
+          unit="mm/s"
+          min={VELOCITA_MIN}
+          max={VELOCITA_MAX}
         />
       </DataSection>
 
