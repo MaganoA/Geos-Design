@@ -79,7 +79,11 @@ export function RangeBarRow({
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={Math.round(clampedValue)}
-        className="relative h-1 w-full overflow-hidden rounded-full bg-[var(--border-mute)]"
+        // h-2 (8 px) matches the AngleDial ring stroke at its default
+        // 120 px diameter (size × 0.065). Both the bar and the dial
+        // are reading the same "live metric" register, so they share
+        // the same visual weight against the panel chrome.
+        className="relative h-2 w-full overflow-hidden rounded-full bg-[var(--border-mute)]"
       >
         <div
           className="absolute inset-y-0 left-0 rounded-full bg-[var(--accent)] transition-[width] duration-200 ease-out"
