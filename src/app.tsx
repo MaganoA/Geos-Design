@@ -11,6 +11,7 @@ import { TopBarVariantB } from './preview/topbar-b'
 import { TopBarVariantC } from './preview/topbar-c'
 import { TopBarVariantD } from './preview/topbar-d'
 import { ToolbarVariants } from './preview/toolbar-variants'
+import { VelocitaVariants } from './preview/velocita-variants'
 import { Viewport } from './viewport/canvas'
 import { useSelectedDevice } from './hooks/use-selected-device'
 import { useRegisterPortaleTesta1 } from './devices/portale-testa-1/register'
@@ -96,6 +97,7 @@ export default function App() {
     if (preview === 'topbar-c') return <TopBarVariantC />
     if (preview === 'topbar-d') return <TopBarVariantD />
     if (preview === 'toolbar-variants') return <ToolbarVariants />
+    if (preview === 'velocita-variants') return <VelocitaVariants />
   }
 
   const t = topBarCollapsed ? TRANSITION_CLOSE : TRANSITION_OPEN
