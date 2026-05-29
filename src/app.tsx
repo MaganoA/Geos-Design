@@ -22,6 +22,7 @@ import { useRegisterPortaleTesta2LampadeUv } from './devices/portale-testa-2-lam
 import { useRegisterSpeed } from './devices/speed/register'
 import { useRegisterSpeedSoffiatore } from './devices/speed-soffiatore/register'
 import { useRegisterSpeedBarraLavaggio } from './devices/speed-barra-lavaggio/register'
+import { useRegisterSicurezzaElettroserrature } from './devices/sicurezza-elettroserrature/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
@@ -59,6 +60,7 @@ export default function App() {
   useRegisterSpeed()
   useRegisterSpeedSoffiatore()
   useRegisterSpeedBarraLavaggio()
+  useRegisterSicurezzaElettroserrature()
 
   // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
   // absorbs the freed width, so the 3D Canvas grows into it. The whole

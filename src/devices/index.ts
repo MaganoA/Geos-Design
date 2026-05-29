@@ -76,6 +76,7 @@ import { Panel as SpeedSoffiatorePanel } from './speed-soffiatore/panel'
 import { Toolbar as SpeedSoffiatoreToolbar } from './speed-soffiatore/toolbar'
 import { Panel as SpeedBarraLavaggioPanel } from './speed-barra-lavaggio/panel'
 import { Toolbar as SpeedBarraLavaggioToolbar } from './speed-barra-lavaggio/toolbar'
+import { Panel as SicurezzaElettroserraturePanel } from './sicurezza-elettroserrature/panel'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
@@ -184,7 +185,11 @@ const registry: Record<string, RegisteredDevice> = {
 
   // Sicurezza → elettroserrature
   sicurezza:                     entry(sicurezzaMeta.meta),
-  'sicurezza-elettroserrature':  entry(elettroserratureMeta.meta),
+  'sicurezza-elettroserrature': {
+    meta: elettroserratureMeta.meta,
+    Panel: SicurezzaElettroserraturePanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
 }
 
 export function getDevice(id: string): RegisteredDevice {
