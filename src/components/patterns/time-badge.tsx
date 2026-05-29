@@ -18,8 +18,13 @@ export function TimeBadge({
   return (
     <Badge
       variant="secondary"
+      // The shadcn `secondary` variant resolves to a fill that's
+      // heavier than the project's muted token, which pulls the badge
+      // up the visual hierarchy past the status pill — wrong for
+      // ambient session metadata. Override the bg explicitly so the
+      // chip sits a step below the StatusBadge in weight.
       className={cn(
-        'tabular-nums text-[var(--text-muted)] ring-1 ring-[var(--border-mute)]',
+        'bg-[var(--bg-muted)] tabular-nums text-[var(--text-muted)]',
         className,
       )}
     >
