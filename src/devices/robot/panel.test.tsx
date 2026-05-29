@@ -8,7 +8,7 @@ import { Panel } from './panel'
 describe('Robot Panel', () => {
   afterEach(cleanup)
 
-  it('renders all 6 joint angles and the linear distance', () => {
+  it('renders all 6 joint angles as dials and the linear distance', () => {
     useMachineStore.getState().setDevice('robot', {
       ...robotInitial,
       angoli: [10, 20, 30, 40, 50, 60],
@@ -20,8 +20,11 @@ describe('Robot Panel', () => {
     for (const j of ['J1', 'J2', 'J3', 'J4', 'J5', 'J6']) {
       expect(screen.getByText(j)).toBeInTheDocument()
     }
-    expect(screen.getByText('10°')).toBeInTheDocument()
-    expect(screen.getByText('60°')).toBeInTheDocument()
+    // AngleDial shows one decimal place on the readout.
+    expect(screen.getByText('10.0°')).toBeInTheDocument()
+    expect(screen.getByText('60.0°')).toBeInTheDocument()
+    // All six joints should be exposed as meters for assistive tech.
+    expect(screen.getAllByRole('meter')).toHaveLength(6)
     expect(screen.getByText('Distanza')).toBeInTheDocument()
     expect(screen.getByText('750 mm')).toBeInTheDocument()
   })
