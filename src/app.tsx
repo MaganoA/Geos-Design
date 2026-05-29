@@ -28,6 +28,7 @@ import { useRegisterPianoAspirato2 } from './devices/piano-aspirato-2/register'
 import { useRegisterImpiantoVuoto } from './devices/impianto-vuoto/register'
 import { useRegisterImpiantoAcqua } from './devices/impianto-acqua/register'
 import { useRegisterImpiantoAria } from './devices/impianto-aria/register'
+import { useRegisterRobot } from './devices/robot/register'
 import { useRegisterToolStand } from './devices/tool-stand/register'
 import { useRegisterToolStandGripperPiccolo } from './devices/tool-stand-gripper-piccolo/register'
 import { useRegisterToolStandGripperMedio } from './devices/tool-stand-gripper-medio/register'
@@ -76,6 +77,7 @@ export default function App() {
   useRegisterImpiantoVuoto()
   useRegisterImpiantoAcqua()
   useRegisterImpiantoAria()
+  useRegisterRobot()
   useRegisterToolStand()
   useRegisterToolStandGripperPiccolo()
   useRegisterToolStandGripperMedio()
