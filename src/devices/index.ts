@@ -70,6 +70,12 @@ import { Panel as PortaleTesta2GripperPinPanel } from './portale-testa-2-gripper
 import { Toolbar as PortaleTesta2GripperPinToolbar } from './portale-testa-2-gripper-pin/toolbar'
 import { Panel as PortaleTesta2LampadeUvPanel } from './portale-testa-2-lampade-uv/panel'
 import { Toolbar as PortaleTesta2LampadeUvToolbar } from './portale-testa-2-lampade-uv/toolbar'
+import { Panel as SpeedPanel } from './speed/panel'
+import { Toolbar as SpeedToolbar } from './speed/toolbar'
+import { Panel as SpeedSoffiatorePanel } from './speed-soffiatore/panel'
+import { Toolbar as SpeedSoffiatoreToolbar } from './speed-soffiatore/toolbar'
+import { Panel as SpeedBarraLavaggioPanel } from './speed-barra-lavaggio/panel'
+import { Toolbar as SpeedBarraLavaggioToolbar } from './speed-barra-lavaggio/toolbar'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
@@ -154,9 +160,21 @@ const registry: Record<string, RegisteredDevice> = {
   'piano-aspirato-2':            entry(piano2Meta.meta),
 
   // Speed → soffiatore / barra di lavaggio
-  speed:                         entry(speedMeta.meta),
-  'speed-soffiatore':            entry(speedSoffiatoreMeta.meta),
-  'speed-barra-lavaggio':        entry(speedBarraMeta.meta),
+  speed: {
+    meta: speedMeta.meta,
+    Panel: SpeedPanel as React.ComponentType<{ label: string }>,
+    Toolbar: SpeedToolbar,
+  },
+  'speed-soffiatore': {
+    meta: speedSoffiatoreMeta.meta,
+    Panel: SpeedSoffiatorePanel as React.ComponentType<{ label: string }>,
+    Toolbar: SpeedSoffiatoreToolbar,
+  },
+  'speed-barra-lavaggio': {
+    meta: speedBarraMeta.meta,
+    Panel: SpeedBarraLavaggioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: SpeedBarraLavaggioToolbar,
+  },
 
   // Impianti → vuoto / acqua / aria
   impianti:                      entry(impiantiMeta.meta),

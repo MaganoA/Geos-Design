@@ -19,6 +19,9 @@ import { useRegisterPortaleTesta1Erogatore } from './devices/portale-testa-1-ero
 import { useRegisterPortaleTesta2 } from './devices/portale-testa-2/register'
 import { useRegisterPortaleTesta2GripperPin } from './devices/portale-testa-2-gripper-pin/register'
 import { useRegisterPortaleTesta2LampadeUv } from './devices/portale-testa-2-lampade-uv/register'
+import { useRegisterSpeed } from './devices/speed/register'
+import { useRegisterSpeedSoffiatore } from './devices/speed-soffiatore/register'
+import { useRegisterSpeedBarraLavaggio } from './devices/speed-barra-lavaggio/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
@@ -53,6 +56,9 @@ export default function App() {
   useRegisterPortaleTesta2()
   useRegisterPortaleTesta2GripperPin()
   useRegisterPortaleTesta2LampadeUv()
+  useRegisterSpeed()
+  useRegisterSpeedSoffiatore()
+  useRegisterSpeedBarraLavaggio()
 
   // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
   // absorbs the freed width, so the 3D Canvas grows into it. The whole
