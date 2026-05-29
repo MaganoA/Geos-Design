@@ -101,38 +101,40 @@ export function AngleDial({
             />
           )
         })}
-        {/* Needle group, rotated to the current (wrapped) angle. */}
-        <g
-          transform={`rotate(${wrapped} ${cx} ${cy})`}
-          style={{
-            transformOrigin: `${cx}px ${cy}px`,
-            transition: 'transform 300ms ease-out',
-          }}
-          className={needleClassName}
-        >
-          {/* Tail (short stub behind the pivot). */}
-          <line
-            x1={cx}
-            y1={cy + radius * 0.18}
-            x2={cx}
-            y2={cy}
-            stroke="currentColor"
-            strokeWidth={strokeWidth * 0.9}
-            strokeLinecap="round"
-          />
-          {/* Main needle — points "up" at angle 0, then group-rotated. */}
-          <line
-            x1={cx}
-            y1={cy}
-            x2={cx}
-            y2={cy - radius * 0.82}
-            stroke="currentColor"
-            strokeWidth={strokeWidth * 1.1}
-            strokeLinecap="round"
-          />
-          {/* Hub. */}
-          <circle cx={cx} cy={cy} r={strokeWidth * 0.7} fill="currentColor" />
-        </g>
+        {/* Needle: tip and tail positions computed in viewport space.
+         * Avoids the SVG/CSS transform-origin trap — CSS transform-origin
+         * on a <g> resolves against the group's bounding box, not the
+         * viewport, which would silently rotate the needle around the
+         * wrong pivot. Direct trig keeps the geometry honest. */}
+        {(() => {
+          // SVG y grows downward; subtract 90° so 0° points to twelve.
+          const a = ((wrapped - 90) * Math.PI) / 180
+          const tipR = radius - tickLen - strokeWidth
+          const tailR = radius * 0.18
+          const tipX = cx + Math.cos(a) * tipR
+          const tipY = cy + Math.sin(a) * tipR
+          const tailX = cx - Math.cos(a) * tailR
+          const tailY = cy - Math.sin(a) * tailR
+          return (
+            <g className={needleClassName}>
+              <line
+                x1={tailX}
+                y1={tailY}
+                x2={tipX}
+                y2={tipY}
+                stroke="currentColor"
+                strokeWidth={strokeWidth * 1.1}
+                strokeLinecap="round"
+              />
+              <circle
+                cx={cx}
+                cy={cy}
+                r={strokeWidth * 0.7}
+                fill="currentColor"
+              />
+            </g>
+          )
+        })()}
       </svg>
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center leading-none">
         <span
