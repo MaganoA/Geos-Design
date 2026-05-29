@@ -46,7 +46,7 @@ export function AngleDial({
   label,
   className,
 }: AngleDialProps) {
-  const stroke = strokeWidth ?? Math.max(4, Math.round(size * 0.09))
+  const stroke = strokeWidth ?? Math.max(3, Math.round(size * 0.065))
   const wrapped = wrap360(value)
   const cx = size / 2
   const cy = size / 2
@@ -70,23 +70,6 @@ export function AngleDial({
   // tolerance keeps the dial silent at rest.
   const showArc = wrapped > 0.05
 
-  // Inward-pointing triangle marker pinned to the arc tip — gives the
-  // sweep a clear "leading edge" the way a play head does.
-  const tipBase = stroke * 0.85
-  // Radial direction (outward) at the arc end.
-  const radX = Math.sin(θ)
-  const radY = -Math.cos(θ)
-  // Tangent (direction of further sweep) at the arc end.
-  const tanX = Math.cos(θ)
-  const tanY = Math.sin(θ)
-  const apexX = endX - radX * tipBase * 1.15
-  const apexY = endY - radY * tipBase * 1.15
-  const baseAX = endX + tanX * tipBase * 0.6
-  const baseAY = endY + tanY * tipBase * 0.6
-  const baseBX = endX - tanX * tipBase * 0.6
-  const baseBY = endY - tanY * tipBase * 0.6
-  const tipPoints = `${apexX},${apexY} ${baseAX},${baseAY} ${baseBX},${baseBY}`
-
   // Cardinal tick marks just inside the ring. Drawn under the arc so the
   // sweep covers any tick it crosses — same visual logic as the
   // reference dial.
@@ -96,8 +79,10 @@ export function AngleDial({
 
   // Centre typography scales with the dial so the same primitive reads
   // right at 80 px (Robot joint grid) and at 160 px (Speed rotazione).
-  const valueFontPx = Math.max(13, Math.round(size * 0.27))
-  const labelFontPx = Math.max(10, Math.round(size * 0.1))
+  // 21 % leaves headroom for "359.9°" (six tabular glyphs) inside the
+  // inner diameter, which is what triggers the worst-case overflow.
+  const valueFontPx = Math.max(12, Math.round(size * 0.21))
+  const labelFontPx = Math.max(10, Math.round(size * 0.095))
 
   return (
     <div
@@ -148,29 +133,26 @@ export function AngleDial({
           className={trackClassName}
         />
 
-        {/* Progress arc — rounded caps, drawn on top of the track. */}
+        {/* Progress arc — rounded caps mark both the fixed twelve-o'clock
+         * origin and the live leading edge. Direction is implicit in
+         * the convention (sweep clockwise from twelve), so no separate
+         * arrowhead is needed — it would only add visual noise the HMI
+         * actively wants to avoid. */}
         {showArc && (
-          <>
-            <path
-              d={arcPath}
-              fill="transparent"
-              stroke="currentColor"
-              strokeWidth={stroke}
-              strokeLinecap="round"
-              className={progressClassName}
-            />
-            <polygon
-              points={tipPoints}
-              fill="currentColor"
-              className={progressClassName}
-            />
-          </>
+          <path
+            d={arcPath}
+            fill="transparent"
+            stroke="currentColor"
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            className={progressClassName}
+          />
         )}
       </svg>
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center leading-none">
         <span
-          className="font-semibold tabular-nums text-[var(--text-default)]"
-          style={{ fontSize: valueFontPx }}
+          className="font-medium tabular-nums text-[var(--text-default)]"
+          style={{ fontSize: valueFontPx, lineHeight: 1 }}
         >
           {value.toFixed(1)}°
         </span>
