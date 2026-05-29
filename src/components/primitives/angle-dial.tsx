@@ -57,43 +57,50 @@ export function AngleDial({
   const wrapped = wrap360(value)
   const cx = size / 2
   const cy = size / 2
-  // Pull the ring in so it doesn't get clipped at the bounding edges.
-  const r = size / 2 - stroke / 2 - 1
-
-  // Cardinal tick geometry — short radial notches just inside the ring.
-  const tickLen = Math.max(3, Math.round(size * 0.04))
-  const tickInset = stroke / 2 + 2
-  const cardinals = [0, 90, 180, 270]
 
   // Marker proportions — derived from the stroke so a thicker ring
   // gets a proportionally larger marker. Stays readable from 80 px
   // (Robot joint dial) up to 200 px.
   const pillLength = stroke * 2.6
   const pillThickness = stroke * 1.05
-  const triHeight = stroke * 1.05
-  const triHalfBase = stroke * 0.6
-  // Gap between the pill (sitting ON the ring) and the triangle's
-  // outer edge (sitting just inside the ring).
-  const triGap = stroke * 0.55
+  const triHeight = stroke * 0.75
+  const triHalfBase = stroke * 0.55
+  // Gap between the pill's outer edge and the triangle's base.
+  const triGap = stroke * 0.3
+
+  // Reserve outward space for the triangle so it stays inside the
+  // viewBox. With two 120 px dials sharing a gap-2 (8 px) row in the
+  // Speed panel, letting the marker overflow could collide with the
+  // sibling dial's marker at adjacent angles. Pulling the ring in is
+  // the safer geometry.
+  const markerOutwardExtent = pillThickness / 2 + triGap + triHeight + 2
+  const r = size / 2 - markerOutwardExtent
+
+  // Cardinal tick geometry — short radial notches just inside the ring.
+  const tickLen = Math.max(3, Math.round(size * 0.04))
+  const tickInset = stroke / 2 + 2
+  const cardinals = [0, 90, 180, 270]
 
   // Drawn at twelve o'clock; the <g> transform spins it to `value`.
   // Pill is centered on the ring perimeter (y = cy − r), tangent → wide.
-  // Triangle is below the pill (closer to centre), apex pointing down
-  // i.e. toward the dial centre at 12 o'clock orientation.
+  // Triangle sits OUTSIDE the pill (further from centre), apex pointing
+  // up i.e. away from the dial centre at 12 o'clock orientation —
+  // operator reads it as "this direction is current angle".
   const pillX = cx - pillLength / 2
   const pillY = cy - r - pillThickness / 2
-  const triBaseY = cy - r + pillThickness / 2 + triGap
-  const triApexY = triBaseY + triHeight
+  const triBaseY = pillY - triGap
+  const triApexY = triBaseY - triHeight
   const tipPoints = [
     `${cx - triHalfBase},${triBaseY}`,
     `${cx + triHalfBase},${triBaseY}`,
     `${cx},${triApexY}`,
   ].join(' ')
 
-  // Centre typography scales with the dial. 22 % keeps "359.9°" within
-  // the inner diameter at six tabular figures — the worst case.
-  const valueFontPx = Math.max(12, Math.round(size * 0.22))
-  const labelFontPx = Math.max(10, Math.round(size * 0.095))
+  // Centre typography scales with the dial. 19 % keeps "359.9°" within
+  // the shrunken inner diameter (we pulled the ring in to reserve room
+  // for the outward marker, so the centre has slightly less space).
+  const valueFontPx = Math.max(12, Math.round(size * 0.19))
+  const labelFontPx = Math.max(10, Math.round(size * 0.09))
 
   // Restrained accent: one cool blue, two tones. The pale tone tints
   // the pill so it overlays the ring without dominating; the deep tone
