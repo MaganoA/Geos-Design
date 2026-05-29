@@ -2,21 +2,20 @@ import { cn } from '@/lib/cn'
 
 interface AngleDialProps {
   /**
-   * Angle in degrees. The progress arc grows from 0° (twelve o'clock)
-   * clockwise to this value, wrapping at 360°. Negative values wrap
-   * too so the arc stays well-defined; the centre readout preserves
-   * the original sign because the operator wants "-90°" not "270°".
+   * Current angle in degrees. The marker sits at this position on the
+   * ring (0° = twelve o'clock, clockwise). Negative values and values
+   * past ±360° both render correctly — the SVG transform takes any
+   * real number — while the centre readout preserves the original
+   * sign because the operator wants to see "-90°" not "270°".
    */
   value: number
   /** Outer diameter in CSS pixels. */
   size?: number
   /**
-   * Stroke width of the track + progress arc. Default scales with the
-   * dial size so the proportions read the same at 80 px and 200 px.
+   * Stroke width of the track ring. Default scales with the dial size
+   * so proportions read the same at 80 px (Robot grid) and 200 px.
    */
   strokeWidth?: number
-  /** Tailwind text-color class for the progress arc + tip marker. */
-  progressClassName?: string
   /** Tailwind text-color class for the track ring + cardinal ticks. */
   trackClassName?: string
   /** Accessible name + visible caption under the centre value. */
@@ -27,21 +26,29 @@ interface AngleDialProps {
 const wrap360 = (n: number) => ((n % 360) + 360) % 360
 
 /**
- * Progress-arc angle dial. A thick grey ring (track) carries a thick
- * black arc that sweeps from 0° at twelve o'clock clockwise to the
- * current angle. A small inward-pointing triangle marks the arc tip;
- * four small ticks at the cardinals (0/90/180/270) anchor the eye.
+ * Position-marker angle dial. A muted ring with four cardinal ticks
+ * carries a small two-piece marker pinned at the current angle:
  *
- * Pure SVG paths in viewport coordinates — no CSS/SVG transform
- * shenanigans. The arc and tip are recomputed on each render so a live
- * ticking value (asse C, ralla) reads cleanly without needing a
- * transition that would lag behind the data.
+ *   - a soft tinted pill that overlays the ring at the marker spot,
+ *     giving it visible presence at a glance from across the panel;
+ *   - a saturated triangle just inside the ring, apex toward the
+ *     centre, encoding the precise angular position.
+ *
+ * Why position-marker, not progress-arc-from-zero: for a continuously
+ * rotating axis (Asse C, Ralla, robot joints), the orientation IS the
+ * data. A sweep that grows from twelve o'clock to the angle is harder
+ * to read at a glance — the eye has to find the leading edge along an
+ * arc — than a single bright marker the eye can lock onto in one
+ * saccade. Same principle as the needle on a real tachometer.
+ *
+ * The marker is drawn at twelve-o'clock geometry and rotated into
+ * place via the SVG transform attribute (not CSS), so neither the
+ * old transform-origin trap nor wrap discontinuities at 360°→0° apply.
  */
 export function AngleDial({
   value,
   size = 120,
   strokeWidth,
-  progressClassName = 'text-[var(--text-default)]',
   trackClassName = 'text-[var(--border-mute)]',
   label,
   className,
@@ -50,39 +57,49 @@ export function AngleDial({
   const wrapped = wrap360(value)
   const cx = size / 2
   const cy = size / 2
-  // Pull the ring in so rounded caps don't get clipped at the edges.
+  // Pull the ring in so it doesn't get clipped at the bounding edges.
   const r = size / 2 - stroke / 2 - 1
 
-  // Arc geometry — start at 12 o'clock, sweep clockwise. SVG's elliptical
-  // arc takes a "large-arc-flag" that decides which of the two possible
-  // arcs to draw; for any sweep past 180° we want the long way around.
-  const θ = (wrapped * Math.PI) / 180
-  const startX = cx
-  const startY = cy - r
-  const endX = cx + r * Math.sin(θ)
-  const endY = cy - r * Math.cos(θ)
-  const largeArc = wrapped > 180 ? 1 : 0
-  const arcPath = `M ${startX} ${startY} A ${r} ${r} 0 ${largeArc} 1 ${endX} ${endY}`
-
-  // Render the arc only past a small epsilon — at exactly 0° the path
-  // would collapse to a zero-length segment, and Safari turns that into
-  // a stray dot with rounded caps. A few hundredths of a degree of
-  // tolerance keeps the dial silent at rest.
-  const showArc = wrapped > 0.05
-
-  // Cardinal tick marks just inside the ring. Drawn under the arc so the
-  // sweep covers any tick it crosses — same visual logic as the
-  // reference dial.
+  // Cardinal tick geometry — short radial notches just inside the ring.
   const tickLen = Math.max(3, Math.round(size * 0.04))
   const tickInset = stroke / 2 + 2
   const cardinals = [0, 90, 180, 270]
 
-  // Centre typography scales with the dial so the same primitive reads
-  // right at 80 px (Robot joint grid) and at 160 px (Speed rotazione).
-  // 21 % leaves headroom for "359.9°" (six tabular glyphs) inside the
-  // inner diameter, which is what triggers the worst-case overflow.
-  const valueFontPx = Math.max(12, Math.round(size * 0.21))
+  // Marker proportions — derived from the stroke so a thicker ring
+  // gets a proportionally larger marker. Stays readable from 80 px
+  // (Robot joint dial) up to 200 px.
+  const pillLength = stroke * 2.6
+  const pillThickness = stroke * 1.05
+  const triHeight = stroke * 1.05
+  const triHalfBase = stroke * 0.6
+  // Gap between the pill (sitting ON the ring) and the triangle's
+  // outer edge (sitting just inside the ring).
+  const triGap = stroke * 0.55
+
+  // Drawn at twelve o'clock; the <g> transform spins it to `value`.
+  // Pill is centered on the ring perimeter (y = cy − r), tangent → wide.
+  // Triangle is below the pill (closer to centre), apex pointing down
+  // i.e. toward the dial centre at 12 o'clock orientation.
+  const pillX = cx - pillLength / 2
+  const pillY = cy - r - pillThickness / 2
+  const triBaseY = cy - r + pillThickness / 2 + triGap
+  const triApexY = triBaseY + triHeight
+  const tipPoints = [
+    `${cx - triHalfBase},${triBaseY}`,
+    `${cx + triHalfBase},${triBaseY}`,
+    `${cx},${triApexY}`,
+  ].join(' ')
+
+  // Centre typography scales with the dial. 22 % keeps "359.9°" within
+  // the inner diameter at six tabular figures — the worst case.
+  const valueFontPx = Math.max(12, Math.round(size * 0.22))
   const labelFontPx = Math.max(10, Math.round(size * 0.095))
+
+  // Restrained accent: one cool blue, two tones. The pale tone tints
+  // the pill so it overlays the ring without dominating; the deep tone
+  // carries the triangle so the eye finds it first.
+  const pillFill = 'oklch(0.88 0.04 250)'
+  const markerFill = 'oklch(0.50 0.18 250)'
 
   return (
     <div
@@ -100,9 +117,8 @@ export function AngleDial({
         viewBox={`0 0 ${size} ${size}`}
         aria-hidden
       >
-        {/* Cardinal ticks — under the arc so it overwrites them when it
-         * sweeps past, matching the reference's "the arc cuts through
-         * the tick" look. */}
+        {/* Cardinal ticks — drawn first so the marker overlays them when
+         * it crosses one. */}
         {cardinals.map((deg) => {
           const a = ((deg - 90) * Math.PI) / 180
           const outerR = r - tickInset
@@ -122,7 +138,7 @@ export function AngleDial({
           )
         })}
 
-        {/* Track — full circle in muted grey. */}
+        {/* Track — full circle. */}
         <circle
           cx={cx}
           cy={cy}
@@ -133,25 +149,26 @@ export function AngleDial({
           className={trackClassName}
         />
 
-        {/* Progress arc — rounded caps mark both the fixed twelve-o'clock
-         * origin and the live leading edge. Direction is implicit in
-         * the convention (sweep clockwise from twelve), so no separate
-         * arrowhead is needed — it would only add visual noise the HMI
-         * actively wants to avoid. */}
-        {showArc && (
-          <path
-            d={arcPath}
-            fill="transparent"
-            stroke="currentColor"
-            strokeWidth={stroke}
-            strokeLinecap="round"
-            className={progressClassName}
+        {/* Position marker — drawn at twelve o'clock and rotated into
+         * place. SVG transform attribute (no CSS) avoids the bounding-
+         * box pivot trap. Passing the raw `value` (not `wrapped`) keeps
+         * the marker visually continuous across 360°→0° transitions
+         * for accumulating axes. */}
+        <g transform={`rotate(${value} ${cx} ${cy})`}>
+          <rect
+            x={pillX}
+            y={pillY}
+            width={pillLength}
+            height={pillThickness}
+            rx={pillThickness / 2}
+            fill={pillFill}
           />
-        )}
+          <polygon points={tipPoints} fill={markerFill} />
+        </g>
       </svg>
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center leading-none">
         <span
-          className="font-medium tabular-nums text-[var(--text-default)]"
+          className="font-semibold tabular-nums text-[var(--text-default)]"
           style={{ fontSize: valueFontPx, lineHeight: 1 }}
         >
           {value.toFixed(1)}°
