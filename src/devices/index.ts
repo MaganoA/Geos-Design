@@ -81,6 +81,12 @@ import { Panel as PianoAspirato1Panel } from './piano-aspirato-1/panel'
 import { Toolbar as PianoAspirato1Toolbar } from './piano-aspirato-1/toolbar'
 import { Panel as PianoAspirato2Panel } from './piano-aspirato-2/panel'
 import { Toolbar as PianoAspirato2Toolbar } from './piano-aspirato-2/toolbar'
+import { Panel as ImpiantoVuotoPanel } from './impianto-vuoto/panel'
+import { Toolbar as ImpiantoVuotoToolbar } from './impianto-vuoto/toolbar'
+import { Panel as ImpiantoAcquaPanel } from './impianto-acqua/panel'
+import { Toolbar as ImpiantoAcquaToolbar } from './impianto-acqua/toolbar'
+import { Panel as ImpiantoAriaPanel } from './impianto-aria/panel'
+import { Toolbar as ImpiantoAriaToolbar } from './impianto-aria/toolbar'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
@@ -191,9 +197,21 @@ const registry: Record<string, RegisteredDevice> = {
 
   // Impianti → vuoto / acqua / aria
   impianti:                      entry(impiantiMeta.meta),
-  'impianto-vuoto':              entry(vuotoMeta.meta),
-  'impianto-acqua':              entry(acquaMeta.meta),
-  'impianto-aria':               entry(ariaMeta.meta),
+  'impianto-vuoto': {
+    meta: vuotoMeta.meta,
+    Panel: ImpiantoVuotoPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ImpiantoVuotoToolbar,
+  },
+  'impianto-acqua': {
+    meta: acquaMeta.meta,
+    Panel: ImpiantoAcquaPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ImpiantoAcquaToolbar,
+  },
+  'impianto-aria': {
+    meta: ariaMeta.meta,
+    Panel: ImpiantoAriaPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ImpiantoAriaToolbar,
+  },
 
   // Sicurezza → elettroserrature
   sicurezza:                     entry(sicurezzaMeta.meta),
