@@ -64,7 +64,7 @@ export function RangeBarRow({
         </Text>
       ) : null}
       <div className="flex items-baseline gap-1.5">
-        <span className="text-[26px] font-semibold leading-none tabular-nums tracking-tight text-[var(--text-default)]">
+        <span className="text-[26px] font-medium leading-none tabular-nums tracking-tight text-[var(--text-default)]">
           {format(value)}
         </span>
         {unit ? (
