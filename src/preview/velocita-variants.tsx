@@ -14,19 +14,24 @@ import { cn } from '@/lib/cn'
  */
 
 // ─── live-oscillating value (mirrors Speed device tick) ──────────
+// Update cadence matches the production machine-store tick (~5 Hz) so
+// the integer-rounded readouts read as "alive but stable" instead of
+// flickering at 60 Hz the way a requestAnimationFrame loop would. The
+// jitter term is small (±1) so the rounded value moves by a few units
+// per tick — the operator's eye can actually parse it.
+const TICK_MS = 200
+const JITTER_AMP = 1
 function useOscillating(center: number, amp: number, periodMs: number) {
   const [v, setV] = useState(center)
   useEffect(() => {
     const start = performance.now()
-    let raf = 0
-    const tick = (t: number) => {
-      const phase = ((t - start) / periodMs) * Math.PI * 2
-      const jitter = (Math.random() - 0.5) * 6
+    const id = setInterval(() => {
+      const t = performance.now() - start
+      const phase = (t / periodMs) * Math.PI * 2
+      const jitter = (Math.random() - 0.5) * 2 * JITTER_AMP
       setV(center + amp * Math.sin(phase) + jitter)
-      raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+    }, TICK_MS)
+    return () => clearInterval(id)
   }, [center, amp, periodMs])
   return v
 }
