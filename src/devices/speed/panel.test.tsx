@@ -16,7 +16,9 @@ describe('Speed Panel', () => {
     })
     render(<Panel />)
     expect(screen.getByText('Posizione')).toBeInTheDocument()
-    expect(screen.getByText('Macchinario')).toBeInTheDocument()
+    // Macchinario has been split — Velocità is its own card now and
+    // Data/ora is a muted top-of-panel chip.
+    expect(screen.getByText('Velocità relazionale')).toBeInTheDocument()
     expect(screen.getByText('Utensile connesso')).toBeInTheDocument()
     expect(screen.getByText('T07')).toBeInTheDocument()
     expect(screen.getByText('T12')).toBeInTheDocument()

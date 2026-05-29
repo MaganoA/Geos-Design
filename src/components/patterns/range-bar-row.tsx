@@ -2,8 +2,14 @@ import { Text } from '@/components/primitives/text'
 import { cn } from '@/lib/cn'
 
 interface RangeBarRowProps {
-  /** Left-hand label (mirrors DataRow). */
-  label: string
+  /** Left-hand label (mirrors DataRow). Optional — omit when the row
+   * lives inside a DataSection whose title already labels it, to avoid
+   * a duplicated identifier. The bar's aria-label still falls back to
+   * the label when present; without it, callers should provide
+   * `ariaLabel` so assistive tech still has a name for the progressbar. */
+  label?: string
+  /** Accessibility name used when `label` is omitted. */
+  ariaLabel?: string
   /** Current sample. */
   value: number
   /** Unit suffix appended to the right of the numeral (e.g. "mm/s"). */
@@ -39,6 +45,7 @@ const clampPct = (v: number, min: number, max: number) => {
  */
 export function RangeBarRow({
   label,
+  ariaLabel,
   value,
   unit,
   min,
@@ -51,9 +58,11 @@ export function RangeBarRow({
 
   return (
     <div className={cn('flex flex-col gap-2 py-2', className)}>
-      <Text variant="sm/normal" className="text-[var(--text-muted)]">
-        {label}
-      </Text>
+      {label ? (
+        <Text variant="sm/normal" className="text-[var(--text-muted)]">
+          {label}
+        </Text>
+      ) : null}
       <div className="flex items-baseline gap-1.5">
         <span className="text-[26px] font-semibold leading-none tabular-nums tracking-tight text-[var(--text-default)]">
           {format(value)}
@@ -66,7 +75,7 @@ export function RangeBarRow({
       </div>
       <div
         role="progressbar"
-        aria-label={label}
+        aria-label={label ?? ariaLabel}
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={Math.round(clampedValue)}

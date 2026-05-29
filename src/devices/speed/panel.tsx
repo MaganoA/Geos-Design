@@ -3,7 +3,7 @@ import { DataSection } from '@/components/patterns/data-section'
 import { RangeBarRow } from '@/components/patterns/range-bar-row'
 import { AngleDial } from '@/components/primitives/angle-dial'
 import { useDeviceState } from '@/hooks/use-device-state'
-import { formatMm, formatTime } from '@/lib/format'
+import { formatMm } from '@/lib/format'
 import type { SpeedState } from './state'
 
 // Nominal machine range for velocità relazionale. The state oscillates
@@ -18,10 +18,16 @@ export function Panel() {
 
   return (
     <div className="flex flex-col gap-3 px-3 pt-1 pb-3">
-      <DataSection title="Macchinario">
-        <DataRow label="Data/ora" value={formatTime(s.dataOra)} />
+      {/* Primary metric of the panel: promoted to its own card so it
+       * sits at the same hierarchical level as Posizione / Rotazione /
+       * Utensile, rather than buried under a generic "Macchinario"
+       * grouping. Section title carries the identifier; the
+       * RangeBarRow drops its internal label to avoid duplication.
+       * Data/ora lives in the panel header now (HeaderExtra slot) so
+       * the body holds operational data only. */}
+      <DataSection title="Velocità relazionale">
         <RangeBarRow
-          label="Velocità relazionale"
+          ariaLabel="Velocità relazionale"
           value={s.velocitaRelazionale}
           unit="mm/s"
           min={VELOCITA_MIN}
