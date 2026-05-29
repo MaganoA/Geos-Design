@@ -23,6 +23,8 @@ import { useRegisterSpeed } from './devices/speed/register'
 import { useRegisterSpeedSoffiatore } from './devices/speed-soffiatore/register'
 import { useRegisterSpeedBarraLavaggio } from './devices/speed-barra-lavaggio/register'
 import { useRegisterSicurezzaElettroserrature } from './devices/sicurezza-elettroserrature/register'
+import { useRegisterPianoAspirato1 } from './devices/piano-aspirato-1/register'
+import { useRegisterPianoAspirato2 } from './devices/piano-aspirato-2/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
@@ -61,6 +63,8 @@ export default function App() {
   useRegisterSpeedSoffiatore()
   useRegisterSpeedBarraLavaggio()
   useRegisterSicurezzaElettroserrature()
+  useRegisterPianoAspirato1()
+  useRegisterPianoAspirato2()
 
   // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
   // absorbs the freed width, so the 3D Canvas grows into it. The whole

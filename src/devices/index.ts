@@ -77,6 +77,10 @@ import { Toolbar as SpeedSoffiatoreToolbar } from './speed-soffiatore/toolbar'
 import { Panel as SpeedBarraLavaggioPanel } from './speed-barra-lavaggio/panel'
 import { Toolbar as SpeedBarraLavaggioToolbar } from './speed-barra-lavaggio/toolbar'
 import { Panel as SicurezzaElettroserraturePanel } from './sicurezza-elettroserrature/panel'
+import { Panel as PianoAspirato1Panel } from './piano-aspirato-1/panel'
+import { Toolbar as PianoAspirato1Toolbar } from './piano-aspirato-1/toolbar'
+import { Panel as PianoAspirato2Panel } from './piano-aspirato-2/panel'
+import { Toolbar as PianoAspirato2Toolbar } from './piano-aspirato-2/toolbar'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
@@ -157,8 +161,16 @@ const registry: Record<string, RegisteredDevice> = {
 
   // Piani aspirati → piano 1 / piano 2
   'piani-aspirati':              entry(pianiAspiratiMeta.meta),
-  'piano-aspirato-1':            entry(piano1Meta.meta),
-  'piano-aspirato-2':            entry(piano2Meta.meta),
+  'piano-aspirato-1': {
+    meta: piano1Meta.meta,
+    Panel: PianoAspirato1Panel as React.ComponentType<{ label: string }>,
+    Toolbar: PianoAspirato1Toolbar,
+  },
+  'piano-aspirato-2': {
+    meta: piano2Meta.meta,
+    Panel: PianoAspirato2Panel as React.ComponentType<{ label: string }>,
+    Toolbar: PianoAspirato2Toolbar,
+  },
 
   // Speed → soffiatore / barra di lavaggio
   speed: {
