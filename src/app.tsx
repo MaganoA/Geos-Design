@@ -28,6 +28,11 @@ import { useRegisterPianoAspirato2 } from './devices/piano-aspirato-2/register'
 import { useRegisterImpiantoVuoto } from './devices/impianto-vuoto/register'
 import { useRegisterImpiantoAcqua } from './devices/impianto-acqua/register'
 import { useRegisterImpiantoAria } from './devices/impianto-aria/register'
+import { useRegisterToolStand } from './devices/tool-stand/register'
+import { useRegisterToolStandGripperPiccolo } from './devices/tool-stand-gripper-piccolo/register'
+import { useRegisterToolStandGripperMedio } from './devices/tool-stand-gripper-medio/register'
+import { useRegisterToolStandGripperGrande } from './devices/tool-stand-gripper-grande/register'
+import { useRegisterToolStandGripperDistanziali } from './devices/tool-stand-gripper-distanziali/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
@@ -71,6 +76,11 @@ export default function App() {
   useRegisterImpiantoVuoto()
   useRegisterImpiantoAcqua()
   useRegisterImpiantoAria()
+  useRegisterToolStand()
+  useRegisterToolStandGripperPiccolo()
+  useRegisterToolStandGripperMedio()
+  useRegisterToolStandGripperGrande()
+  useRegisterToolStandGripperDistanziali()
 
   // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
   // absorbs the freed width, so the 3D Canvas grows into it. The whole

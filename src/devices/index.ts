@@ -87,6 +87,15 @@ import { Panel as ImpiantoAcquaPanel } from './impianto-acqua/panel'
 import { Toolbar as ImpiantoAcquaToolbar } from './impianto-acqua/toolbar'
 import { Panel as ImpiantoAriaPanel } from './impianto-aria/panel'
 import { Toolbar as ImpiantoAriaToolbar } from './impianto-aria/toolbar'
+import { Panel as ToolStandPanel } from './tool-stand/panel'
+import { Toolbar as ToolStandToolbar } from './tool-stand/toolbar'
+import { Panel as ToolStandGripperPiccoloPanel } from './tool-stand-gripper-piccolo/panel'
+import { Toolbar as ToolStandGripperPiccoloToolbar } from './tool-stand-gripper-piccolo/toolbar'
+import { Panel as ToolStandGripperMedioPanel } from './tool-stand-gripper-medio/panel'
+import { Toolbar as ToolStandGripperMedioToolbar } from './tool-stand-gripper-medio/toolbar'
+import { Panel as ToolStandGripperGrandePanel } from './tool-stand-gripper-grande/panel'
+import { Toolbar as ToolStandGripperGrandeToolbar } from './tool-stand-gripper-grande/toolbar'
+import { Panel as ToolStandGripperDistanzialiPanel } from './tool-stand-gripper-distanziali/panel'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
@@ -144,11 +153,31 @@ const registry: Record<string, RegisteredDevice> = {
   'dispenser-distanziali':       entry(dispenserMeta.meta),
 
   // Tool stand → 4 gripper presets
-  'tool-stand':                          entry(toolStandMeta.meta),
-  'tool-stand-gripper-piccolo':          entry(toolStandGripperPiccoloMeta.meta),
-  'tool-stand-gripper-medio':            entry(toolStandGripperMedioMeta.meta),
-  'tool-stand-gripper-grande':           entry(toolStandGripperGrandeMeta.meta),
-  'tool-stand-gripper-distanziali':      entry(toolStandGripperDistanzialiMeta.meta),
+  'tool-stand': {
+    meta: toolStandMeta.meta,
+    Panel: ToolStandPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandToolbar,
+  },
+  'tool-stand-gripper-piccolo': {
+    meta: toolStandGripperPiccoloMeta.meta,
+    Panel: ToolStandGripperPiccoloPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandGripperPiccoloToolbar,
+  },
+  'tool-stand-gripper-medio': {
+    meta: toolStandGripperMedioMeta.meta,
+    Panel: ToolStandGripperMedioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandGripperMedioToolbar,
+  },
+  'tool-stand-gripper-grande': {
+    meta: toolStandGripperGrandeMeta.meta,
+    Panel: ToolStandGripperGrandePanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandGripperGrandeToolbar,
+  },
+  'tool-stand-gripper-distanziali': {
+    meta: toolStandGripperDistanzialiMeta.meta,
+    Panel: ToolStandGripperDistanzialiPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
 
   // Sistema di erogazione resina → serbatoio / erogatore / alimentatore inserti
   'erogazione-resina':                       entry(resinaMeta.meta),
