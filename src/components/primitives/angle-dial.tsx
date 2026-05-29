@@ -177,7 +177,7 @@ export function AngleDial({
       </svg>
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center leading-none">
         <span
-          className="font-semibold tabular-nums text-[var(--text-default)]"
+          className="font-medium tabular-nums text-[var(--text-default)]"
           style={{ fontSize: valueFontPx, lineHeight: 1 }}
         >
           {value.toFixed(1)}°

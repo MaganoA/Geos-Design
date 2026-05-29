@@ -1,14 +1,12 @@
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/cn'
 
 /**
- * Compact muted chip showing a clock icon + a time string. Ambient
- * session metadata that lives at the top of a device panel — it tells
- * the operator "the data below is from this moment", without competing
- * with operational metrics for attention. Tabular-nums so the digits
- * don't shift width as seconds tick.
- *
- * Visual weight: --bg-muted background, --text-muted ink, --border-mute
- * outline. Sits a step below DataRow values, which are --text-default.
+ * Compact muted chip showing a clock icon + a time string. Composes
+ * the shadcn Badge primitive (secondary variant) with a tabular-nums
+ * override so the digits don't shift width as seconds tick. Lives next
+ * to the device StatusBadge in the panel header — both are session
+ * metadata, both share the Badge primitive.
  */
 export function TimeBadge({
   time,
@@ -18,21 +16,23 @@ export function TimeBadge({
   className?: string
 }) {
   return (
-    <span
+    <Badge
+      variant="secondary"
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full bg-[var(--bg-muted)] px-2.5 py-1 text-[12px] tabular-nums text-[var(--text-muted)] ring-1 ring-[var(--border-mute)]',
+        'tabular-nums text-[var(--text-muted)] ring-1 ring-[var(--border-mute)]',
         className,
       )}
     >
-      <ClockIcon className="h-3.5 w-3.5" />
+      <ClockIcon />
       {time}
-    </span>
+    </Badge>
   )
 }
 
-function ClockIcon({ className }: { className?: string }) {
+function ClockIcon() {
+  // Sized by the Badge's [&>svg]:size-3 rule — no width/height needed.
   return (
-    <svg viewBox="0 0 16 16" className={className} aria-hidden>
+    <svg viewBox="0 0 16 16" aria-hidden>
       <circle
         cx="8"
         cy="8"
