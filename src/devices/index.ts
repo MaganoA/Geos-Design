@@ -87,6 +87,8 @@ import { Panel as ImpiantoAcquaPanel } from './impianto-acqua/panel'
 import { Toolbar as ImpiantoAcquaToolbar } from './impianto-acqua/toolbar'
 import { Panel as ImpiantoAriaPanel } from './impianto-aria/panel'
 import { Toolbar as ImpiantoAriaToolbar } from './impianto-aria/toolbar'
+import { Panel as RobotPanel } from './robot/panel'
+import { Toolbar as RobotToolbar } from './robot/toolbar'
 import { Panel as ToolStandPanel } from './tool-stand/panel'
 import { Toolbar as ToolStandToolbar } from './tool-stand/toolbar'
 import { Panel as ToolStandGripperPiccoloPanel } from './tool-stand-gripper-piccolo/panel'
@@ -149,7 +151,11 @@ const registry: Record<string, RegisteredDevice> = {
   },
 
   // Robot, Dispenser (root)
-  robot:                         entry(robotMeta.meta),
+  robot: {
+    meta: robotMeta.meta,
+    Panel: RobotPanel as React.ComponentType<{ label: string }>,
+    Toolbar: RobotToolbar,
+  },
   'dispenser-distanziali':       entry(dispenserMeta.meta),
 
   // Tool stand → 4 gripper presets
