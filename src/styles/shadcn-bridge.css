@@ -28,8 +28,15 @@
   --color-destructive:        var(--bg-state-danger);
   --color-destructive-foreground: var(--text-inverted);
 
-  --color-border:             var(--border-default);
-  --color-input:              var(--border-default);
+  /* Shadcn-facing border + input must read as the canonical light-gray
+   * shadcn ships with, not the project's alpha-based --border-default
+   * (rgb 39 39 42 / 0.10). On paper the two render the same brightness
+   * on white, but the alpha value composites slightly darker than the
+   * solid token shadcn.com publishes — Annulla outline + Dialog ring
+   * were reading 'black-ish' instead of the soft gray Andrea expects
+   * from shadcn. Match shadcn v4 light-mode --border / --input exactly. */
+  --color-border:             oklch(0.922 0 0);
+  --color-input:              oklch(0.922 0 0);
   --color-ring:               var(--stone-800);
 }
 
