@@ -99,6 +99,7 @@ import { Toolbar as ToolStandGripperMedioToolbar } from './tool-stand-gripper-me
 import { Panel as ToolStandGripperGrandePanel } from './tool-stand-gripper-grande/panel'
 import { Toolbar as ToolStandGripperGrandeToolbar } from './tool-stand-gripper-grande/toolbar'
 import { Panel as ToolStandGripperDistanzialiPanel } from './tool-stand-gripper-distanziali/panel'
+import { Toolbar as ToolStandGripperDistanzialiToolbar } from './tool-stand-gripper-distanziali/toolbar'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
@@ -190,7 +191,7 @@ const registry: Record<string, RegisteredDevice> = {
   'tool-stand-gripper-distanziali': {
     meta: toolStandGripperDistanzialiMeta.meta,
     Panel: ToolStandGripperDistanzialiPanel as React.ComponentType<{ label: string }>,
-    Toolbar: StubToolbar,
+    Toolbar: ToolStandGripperDistanzialiToolbar,
   },
 
   // Sistema di erogazione resina → serbatoio / erogatore / alimentatore inserti
