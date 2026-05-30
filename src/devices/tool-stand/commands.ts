@@ -1,15 +1,13 @@
 import { useMachineStore } from '@/store/machine-store'
 import type { Command } from '@/types/command'
-import { deriveStatus, type GripperKind, type ToolStandState } from './state'
+import {
+  GRIPPER_DEVICE_ID,
+  deriveStatus,
+  type GripperKind,
+  type ToolStandState,
+} from './state'
 
 const DEVICE_ID = 'tool-stand'
-
-const GRIPPER_DEVICE_ID: Record<GripperKind, string> = {
-  piccolo: 'tool-stand-gripper-piccolo',
-  medio: 'tool-stand-gripper-medio',
-  grande: 'tool-stand-gripper-grande',
-  distanziali: 'tool-stand-gripper-distanziali',
-}
 
 /**
  * Mount a specific gripper on the robot head: writes the choice to the

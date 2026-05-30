@@ -3,25 +3,10 @@ import { DataSection } from '@/components/patterns/data-section'
 import { AngleDial } from '@/components/primitives/angle-dial'
 import { useDeviceState } from '@/hooks/use-device-state'
 import type { RobotState } from './state'
-import type { GripperKind, ToolStandState } from '../tool-stand/state'
-
-// Localised, capitalised labels for the four gripper presets. Kept
-// alongside the robot panel (rather than reaching into tool-stand) so
-// the mounted-gripper readout reads the same way regardless of which
-// device the operator opened.
-const GRIPPER_LABEL: Record<GripperKind, string> = {
-  piccolo: 'Piccolo',
-  medio: 'Medio',
-  grande: 'Grande',
-  distanziali: 'Distanziali',
-}
+import { GripperSection } from './gripper-section'
 
 export function Panel() {
   const robot = useDeviceState<RobotState>('robot')
-  // Cross-device read: the robot doesn't own the gripper choice — the
-  // tool-stand does — but for the operator this readout is most useful
-  // here, next to the pose.
-  const toolStand = useDeviceState<ToolStandState>('tool-stand')
   if (!robot) return null
 
   return (
@@ -43,16 +28,13 @@ export function Panel() {
         <DataRow label="Distanza" value={`${robot.distanza} mm`} />
       </DataSection>
 
-      <DataSection title="Gripper">
-        <DataRow
-          label="Gripper montato"
-          value={
-            toolStand?.gripperMontato
-              ? GRIPPER_LABEL[toolStand.gripperMontato]
-              : '—'
-          }
-        />
-      </DataSection>
+      {/* The Gripper readout used to live as a DataRow here, mirroring
+       * tool-stand.gripperMontato. It's now its own slot: a primary
+       * CTA when no gripper is mounted, or a link card to the mounted
+       * gripper's panel when one is — collapsing the indirection so
+       * the operator goes from "I need a gripper" to "I'm on it" in
+       * one tap. */}
+      <GripperSection />
     </div>
   )
 }
