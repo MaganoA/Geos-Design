@@ -58,10 +58,13 @@ export function GripperValvoleDialog({ kind, open, onOpenChange }: Props) {
           </DialogDescription>
         </DialogHeader>
 
+        {/* Round cells — they're the gripper's suction cups, so the
+         * visual model should match: four circles arranged in a row,
+         * each toggleable, filled accent when active. */}
         <div
           role="group"
           aria-label="Valvole"
-          className="grid grid-cols-4 gap-3 py-2"
+          className="grid grid-cols-4 justify-items-center gap-3 py-2"
         >
           {(current?.ventose ?? []).map((v, i) => (
             <button
@@ -71,7 +74,7 @@ export function GripperValvoleDialog({ kind, open, onOpenChange }: Props) {
               aria-label={`Valvola ${i + 1}`}
               onClick={() => toggle(i)}
               className={cn(
-                'flex aspect-square flex-col items-center justify-center gap-1 rounded-[var(--radius-md)] border text-sm font-medium tabular-nums transition-colors',
+                'flex aspect-square w-full max-w-[112px] flex-col items-center justify-center gap-0.5 rounded-full border text-sm font-medium tabular-nums transition-colors',
                 v.attiva
                   ? 'border-[var(--accent)] bg-[var(--accent)] text-white shadow-xs'
                   : 'border-input bg-background text-[var(--text-muted)] hover:bg-[var(--bg-muted)]',

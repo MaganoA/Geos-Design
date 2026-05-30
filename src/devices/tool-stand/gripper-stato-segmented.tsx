@@ -1,3 +1,4 @@
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMachineStore } from '@/store/machine-store'
 import { useModeStore } from '@/store/mode-store'
 import { useRoleStore } from '@/store/role-store'
@@ -6,16 +7,12 @@ import { GRIPPER_DEVICE_ID, type GripperKind } from './state'
 
 type OperatingStato = 'vuoto' | 'soffio' | 'niente'
 
-interface Option {
-  value: OperatingStato
-  label: string
+const ORDER: OperatingStato[] = ['vuoto', 'soffio', 'niente']
+const LABEL: Record<OperatingStato, string> = {
+  vuoto: 'Aspirazione',
+  soffio: 'Soffio',
+  niente: 'Nessuno',
 }
-
-const OPTIONS: Option[] = [
-  { value: 'vuoto', label: 'Aspirazione' },
-  { value: 'soffio', label: 'Soffio' },
-  { value: 'niente', label: 'Nessuno' },
-]
 
 interface Props {
   kind: GripperKind
@@ -23,20 +20,20 @@ interface Props {
 
 /**
  * Three-way segmented control for the gripper's operating mode while
- * mounted. Maps the user-facing labels to the underlying state:
+ * mounted. Built on the shadcn Tabs primitive (no content panels — we
+ * only use the trigger row as a single-select segmented). Each trigger
+ * carries an inline-SVG icon next to its label so the operator's eye
+ * can find a mode by glance, not by reading three words side-by-side.
  *
- *   Aspirazione → 'vuoto'
- *   Soffio      → 'soffio'
- *   Nessuno     → 'niente'
+ * Mapping:
+ *   Aspirazione → 'vuoto'   (down-arrow icon: drawing material in)
+ *   Soffio      → 'soffio'  (up-arrow with flare: blowing out)
+ *   Nessuno     → 'niente'  (horizontal dash: idle)
  *
- * Direct store write — no command bus — because this is a continuous
- * mode toggle, not a discrete action that wants an audit trail. Role
- * + mode gating still applies: the whole control is disabled unless
- * operatore + manuale, mirroring the preleva/posa gates.
- *
- * Hidden entirely when the gripper isn't mounted (stato ==
- * 'a-magazzino'): switching mode on a parked gripper doesn't make
- * sense and surfacing the control would just confuse the operator.
+ * Hidden when the gripper is in magazzino — switching mode on an
+ * unmounted gripper makes no sense and surfacing the control would
+ * just confuse the operator. Role / mode gating mirrors the
+ * preleva-/posa- commands: disabled unless operatore + manuale.
  */
 export function GripperStatoSegmented({ kind }: Props) {
   const deviceId = GRIPPER_DEVICE_ID[kind]
@@ -51,41 +48,85 @@ export function GripperStatoSegmented({ kind }: Props) {
   const stato = current.stato as OperatingStato
   const disabled = role === 'operatore' && mode !== 'manuale'
 
-  const set = (next: OperatingStato) => {
-    if (disabled || next === stato) return
-    setDevice(deviceId, { ...current, stato: next })
-  }
-
   return (
-    <div
-      role="radiogroup"
-      aria-label="Modalità di aspirazione"
-      className={cn(
-        'flex items-center gap-0.5 rounded-full bg-[var(--bg-muted)] p-1',
-        disabled && 'pointer-events-none opacity-50',
-      )}
+    <Tabs
+      value={stato}
+      onValueChange={(next) => {
+        if (disabled) return
+        const v = next as OperatingStato
+        if (v === stato) return
+        setDevice(deviceId, { ...current, stato: v })
+      }}
+      className={cn(disabled && 'pointer-events-none opacity-50')}
     >
-      {OPTIONS.map((o) => {
-        const active = o.value === stato
-        return (
-          <button
-            key={o.value}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            onClick={() => set(o.value)}
+      <TabsList>
+        {ORDER.map((v) => (
+          <TabsTrigger
+            key={v}
+            value={v}
             disabled={disabled}
-            className={cn(
-              'rounded-full px-4 py-2 text-xs font-medium uppercase tracking-wider transition-colors',
-              active
-                ? 'bg-[var(--bg-default)] text-[var(--text-default)] shadow-xs'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-default)]',
-            )}
+            className="gap-2 text-xs uppercase tracking-wider"
           >
-            {o.label}
-          </button>
-        )
-      })}
-    </div>
+            <StatoIcon mode={v} />
+            {LABEL[v]}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
+  )
+}
+
+function StatoIcon({ mode }: { mode: OperatingStato }) {
+  if (mode === 'vuoto') {
+    // Aspirazione — material drawn into the gripper: a down-arrow
+    // converging into a small dot.
+    return (
+      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
+        <path
+          d="M7 2 L7 9 M4 6 L7 9 L10 6"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+        <circle cx="7" cy="11.5" r="1" fill="currentColor" />
+      </svg>
+    )
+  }
+  if (mode === 'soffio') {
+    // Soffio — outward blast: an up-arrow with a small flare base.
+    return (
+      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
+        <path
+          d="M7 12 L7 5 M4 8 L7 5 L10 8"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+        <path
+          d="M4.5 3 L7 1.5 L9.5 3"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+          opacity="0.6"
+        />
+      </svg>
+    )
+  }
+  // Nessuno — idle, no flow either direction.
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
+      <path
+        d="M3 7 L11 7"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+    </svg>
   )
 }

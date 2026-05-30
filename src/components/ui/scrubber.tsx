@@ -26,6 +26,8 @@ export interface ScrubberProps {
   ticks?: number
   /** Controlled value */
   value?: number
+  /** Show the numeric value at the right of the track. Default true. */
+  showValue?: boolean
 }
 
 const clamp = (val: number, min: number, max: number) =>
@@ -48,6 +50,7 @@ function Scrubber({
   max = 1,
   step = 0.01,
   decimals = 2,
+  showValue = true,
   ticks = 9,
   className,
 }: ScrubberProps) {
@@ -248,19 +251,22 @@ function Scrubber({
         >
           {label}
         </div>
-        {/* Value display */}
-        <div
-          className="pointer-events-none absolute top-1/2 right-[14px] -translate-y-1/2 text-foreground"
-          style={{
-            zIndex: 4,
-            fontFamily: "ui-monospace, monospace",
-            fontVariantNumeric: "tabular-nums",
-            fontSize: 15,
-            fontWeight: 500,
-          }}
-        >
-          {value.toFixed(decimals)}
-        </div>
+        {/* Value display — hidden when callers render the numeric value
+         * outside the track (e.g. in a paired Input field). */}
+        {showValue && (
+          <div
+            className="pointer-events-none absolute top-1/2 right-[14px] -translate-y-1/2 text-foreground"
+            style={{
+              zIndex: 4,
+              fontFamily: "ui-monospace, monospace",
+              fontVariantNumeric: "tabular-nums",
+              fontSize: 15,
+              fontWeight: 500,
+            }}
+          >
+            {value.toFixed(decimals)}
+          </div>
+        )}
       </div>
     </div>
   )

@@ -141,8 +141,25 @@ function AperturaField({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-baseline justify-between">
-        <span className="text-sm text-[var(--text-muted)]">{label}</span>
+      <span className="text-sm text-[var(--text-muted)]">{label}</span>
+      {/* Scrubber takes the available width; numeric Input sits on the
+       * right as the single source of truth for the value display.
+       * Scrubber is configured with showValue={false} so the digit
+       * doesn't echo inside the track. */}
+      <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <Scrubber
+            label=""
+            value={value}
+            min={APERTURA_MIN}
+            max={APERTURA_MAX}
+            step={APERTURA_STEP}
+            decimals={0}
+            ticks={11}
+            showValue={false}
+            onValueChange={onChange}
+          />
+        </div>
         <div className="flex items-center gap-1.5">
           <Input
             type="number"
@@ -160,25 +177,15 @@ function AperturaField({
               }
             }}
             className={cn(
-              'h-8 w-20 text-right tabular-nums',
-              // Hide the spinner controls so the field reads as a
-              // numeric display, not a poorly-styled number picker.
+              'h-9 w-16 text-right tabular-nums',
+              // Hide the spinner controls — the scrubber IS the
+              // graphical adjuster; the input is for keyboard edits.
               '[appearance:textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none',
             )}
           />
           <span className="text-xs text-[var(--text-muted)]">mm</span>
         </div>
       </div>
-      <Scrubber
-        label=""
-        value={value}
-        min={APERTURA_MIN}
-        max={APERTURA_MAX}
-        step={APERTURA_STEP}
-        decimals={0}
-        ticks={11}
-        onValueChange={onChange}
-      />
     </div>
   )
 }
