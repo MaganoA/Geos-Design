@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { useDeviceState } from '@/hooks/use-device-state'
 import { useModeStore } from '@/store/mode-store'
 import { useRoleStore } from '@/store/role-store'
-import { cn } from '@/lib/cn'
+import { DockIconButton } from './dock-icon-button'
 import { GripperSetupDialog } from './gripper-setup-dialog'
 import { GripperValvoleDialog } from './gripper-valvole-dialog'
 import { GripperStatoSegmented } from './gripper-stato-segmented'
@@ -80,34 +79,6 @@ export function GripperValveDock({ kind }: Props) {
         onOpenChange={setValvoleOpen}
       />
     </>
-  )
-}
-
-function DockIconButton({
-  label,
-  icon,
-  onClick,
-  disabled,
-}: {
-  label: string
-  icon: React.ReactNode
-  onClick: () => void
-  disabled?: boolean
-}) {
-  return (
-    <Button
-      variant="ghost"
-      onClick={onClick}
-      disabled={disabled}
-      className={cn(
-        'flex h-[52px] min-w-[110px] flex-col items-center justify-center gap-1 rounded-[var(--radius-md)] px-3',
-      )}
-    >
-      <span className="text-[var(--icon-default)]">{icon}</span>
-      <span className="text-[10px] font-medium uppercase tracking-wider text-[var(--text-muted)]">
-        {label}
-      </span>
-    </Button>
   )
 }
 

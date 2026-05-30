@@ -38,6 +38,8 @@ import { useRegisterToolStandGripperDistanziali } from './devices/tool-stand-gri
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
+// Width of the left rail column. Mirrors gridTemplateColumns below.
+const RAIL_WIDTH = 52
 
 // Motion choreography for the TopBar collapse/expand. Asymmetric on
 // purpose: opening is gentler (the user is about to read), closing is
@@ -152,15 +154,28 @@ export default function App() {
         <aside className="pointer-events-auto absolute top-4 bottom-4 left-4 z-10">
           <LeftPanel />
         </aside>
-        <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 flex justify-center pb-4">
-          <div className="pointer-events-auto">
-            <BottomToolbar />
-          </div>
-        </div>
       </section>
       <aside style={{ gridArea: 'right' }} className="bg-transparent">
         <RightPanel />
       </aside>
+      {/* Bottom toolbar — fixed to the viewport so its centering covers
+        the full horizontal band between the left rail and the right
+        edge of the right panel, instead of just the 1fr "left" grid
+        cell (which left it visibly off-centre once the right panel
+        opened). The right offset animates with the right column so
+        the toolbar slides into its new centre as the panel reveals. */}
+      <div
+        className="pointer-events-none fixed bottom-0 z-20 flex justify-center pb-4"
+        style={{
+          left: RAIL_WIDTH,
+          right: rightColVisible ? RIGHT_PANEL_WIDTH : 0,
+          transition: 'right 320ms cubic-bezier(0.32, 0.72, 0, 1)',
+        }}
+      >
+        <div className="pointer-events-auto">
+          <BottomToolbar />
+        </div>
+      </div>
     </div>
   )
 }

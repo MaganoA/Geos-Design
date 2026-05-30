@@ -9,11 +9,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
 import { useCommandDispatch } from '@/hooks/use-command-dispatch'
 import { useDeviceState } from '@/hooks/use-device-state'
 import { canRunCommand } from '@/lib/role-gate'
 import { commands as toolStandCommands } from './commands'
+import { DockIconButton } from './dock-icon-button'
 import { GRIPPER_LABEL, type GripperKind, type ToolStandState } from './state'
 
 const TOOL_STAND_ID = 'tool-stand'
@@ -58,30 +58,26 @@ export function GripperMountActions({ kind }: { kind: GripperKind }) {
     !canRunCommand(activeCmd, role) ||
     (!!activeCmd.manualOnly && mode !== 'manuale')
 
-  const buttonClass = 'h-[52px] min-w-[156px]'
-
   if (isThisMounted) {
     return (
-      <Button
-        disabled={disabled}
-        className={buttonClass}
+      <DockIconButton
+        label="Posa Gripper"
+        icon={<PosaIcon />}
         onClick={() => void dispatch(posaCmd, TOOL_STAND_ID)}
-      >
-        Posa Gripper
-      </Button>
+        disabled={disabled}
+      />
     )
   }
 
   if (otherMounted) {
     return (
       <>
-        <Button
-          disabled={disabled}
-          className={buttonClass}
+        <DockIconButton
+          label="Preleva Gripper"
+          icon={<PrelevaIcon />}
           onClick={() => setSwapOpen(true)}
-        >
-          Preleva Gripper
-        </Button>
+          disabled={disabled}
+        />
         <AlertDialog open={swapOpen} onOpenChange={setSwapOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -111,12 +107,61 @@ export function GripperMountActions({ kind }: { kind: GripperKind }) {
 
   // Nothing mounted — direct preleva, no warning needed.
   return (
-    <Button
-      disabled={disabled}
-      className={buttonClass}
+    <DockIconButton
+      label="Preleva Gripper"
+      icon={<PrelevaIcon />}
       onClick={() => void dispatch(prelevaCmd, TOOL_STAND_ID)}
-    >
-      Preleva Gripper
-    </Button>
+      disabled={disabled}
+    />
+  )
+}
+
+function PrelevaIcon() {
+  // Arrow leaving the tool stand up onto the robot head.
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+      <path
+        d="M9 14 L9 4 M5 8 L9 4 L13 8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <line
+        x1="3"
+        y1="15"
+        x2="15"
+        y2="15"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function PosaIcon() {
+  // Arrow leaving the robot head back down onto the tool stand.
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+      <path
+        d="M9 4 L9 14 M5 10 L9 14 L13 10"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <line
+        x1="3"
+        y1="15"
+        x2="15"
+        y2="15"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
   )
 }
