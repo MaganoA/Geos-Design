@@ -58,7 +58,7 @@ export function GripperSelectDialog({ open, onOpenChange, onConfirm }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="border-0 shadow-xl sm:max-w-md">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Preleva Gripper</DialogTitle>
           <DialogDescription>
