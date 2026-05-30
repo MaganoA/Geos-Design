@@ -1,4 +1,8 @@
 @import "tailwindcss";
+/* Adds the `animate-in`, `animate-out`, `fade-in-0`, `zoom-in-95` … utility
+   classes the shadcn primitives apply to Dialog/Popover/Sheet/Tooltip.
+   Without it the modal pops in instantly with no animation. */
+@import "tw-animate-css";
 
 @import "./tokens.css";
 @import "./shadcn-bridge.css";
