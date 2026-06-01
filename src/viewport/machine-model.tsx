@@ -35,22 +35,19 @@ export function MachineModel({ onIndex }: MachineModelProps) {
     [scene],
   )
 
-  // Normalise PBR materials shipped in the GLB. The asset was authored
-  // with very low roughness + envMapIntensity 1.0, which (combined with
-  // any HDR environment) blows out the silhouette into a uniform white
-  // smear. Clamp roughness up + dial env reflections down so the
-  // machine reads as matte industrial metal, not chrome.
+  // Dial the GLB's HDR coupling down without flattening its native
+  // roughness palette. The asset already authors dark steel vs. white
+  // housing with different roughness values; clobbering them would
+  // erase the contrast that makes the render read as a technical
+  // illustration. We *only* tamp envMapIntensity so the (near-zero)
+  // scene environment doesn't lift the blacks into greys.
   useEffect(() => {
     scene.traverse((obj) => {
       if (!(obj instanceof Mesh)) return
       const mats = Array.isArray(obj.material) ? obj.material : [obj.material]
       for (const m of mats) {
         if (m instanceof MeshStandardMaterial) {
-          // Floor across the machine reads cleanest at semi-matte.
-          if (m.roughness < 0.45) m.roughness = 0.55
-          // Don't let the HDR drown diffuse; it should only inflect
-          // highlights on the metal parts.
-          m.envMapIntensity = 0.35
+          m.envMapIntensity = 0.25
           m.needsUpdate = true
         }
       }

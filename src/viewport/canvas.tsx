@@ -174,52 +174,50 @@ function Scene() {
     <>
       <CameraRig />
 
-      {/* Warm-grey backdrop — the machine renders mostly in cool whites,
-       *  so a slightly warm canvas separates the silhouette from the
-       *  background without competing for attention. */}
-      <color attach="background" args={['#f3f1ee']} />
+      {/* Cool neutral-grey canvas — matches the reference render's
+       *  technical-illustration look. No warm tint; the machine is
+       *  a black-and-white industrial subject, not a styled product
+       *  shot. */}
+      <color attach="background" args={['#eef0f2']} />
 
-      {/* Three-point setup tuned for an industrial HMI render — clarity
-       *  over photoreal. Key light is off the camera axis so the model
-       *  picks up real form shading instead of flat front-lighting. */}
+      {/* High-contrast lighting on purpose. The reference reads as a
+       *  monochrome blueprint render: strong key, almost-no fill, just
+       *  enough hemi so the up-facing dark parts don't crush to pure
+       *  black. Anything more than this and the GLB's dark steel frame
+       *  reflects too much HDR and reads grey. */}
       <hemisphereLight
-        args={['#ffffff', '#d8d6d2', 0.35]}
+        args={['#ffffff', '#c8ccd0', 0.22]}
         position={[0, 1, 0]}
       />
       <directionalLight
-        position={[8, 14, -2]}
-        intensity={1.4}
+        position={[9, 14, 4]}
+        intensity={1.6}
         castShadow={false}
       />
       <directionalLight
-        position={[-7, 5, 4]}
-        intensity={0.45}
-        castShadow={false}
-      />
-      <directionalLight
-        position={[-2, 6, -8]}
-        intensity={0.25}
+        position={[-6, 6, -3]}
+        intensity={0.18}
         castShadow={false}
       />
 
-      {/* Environment is for PBR reflections only — drei's `studio` preset
-       *  is far too bright as a primary light source. `apartment` is
-       *  softer; the intensity is dialled down so the HDR shows up in
-       *  highlights without dominating the diffuse term. */}
+      {/* Environment kept at near-zero intensity. The reference has no
+       *  visible reflections — it's a matte technical render. Leaving a
+       *  whisper of HDR (0.12) keeps PBR maths happy on metal parts
+       *  without lifting the blacks. */}
       <Environment
         preset="apartment"
         background={false}
-        environmentIntensity={0.35}
+        environmentIntensity={0.12}
       />
 
       <SelectionOutline>
         <MachineModelSuspense onIndex={setMeshIndex} />
       </SelectionOutline>
 
-      {/* Contact shadow grounds the model. Opacity bumped from 0.35 so
-       *  the machine reads as resting on the floor, not floating above
-       *  it under the new lower-exposure lighting. */}
-      <ContactShadows position={[0, 0, 0]} opacity={0.55} blur={2.4} far={4} />
+      {/* Contact shadow grounds the model. Slightly tighter blur and
+       *  higher opacity so the shadow reads as the crisp drop you see
+       *  in the reference instead of a soft puddle. */}
+      <ContactShadows position={[0, 0, 0]} opacity={0.65} blur={1.8} far={4} />
       <PerfHud />
     </>
   )
@@ -252,10 +250,10 @@ export function Viewport() {
         gl={{
           antialias: true,
           powerPreference: 'high-performance',
-          // ACES is R3F's default; pinning the exposure here trims the
-          // highlights without muddying the midtones. The machine's
-          // white metals stay white but stop blooming under the HDR.
-          toneMappingExposure: 0.85,
+          // Pinned exposure trims the white panels back to the soft
+          // off-white of the reference render. Lower than 0.7 starts
+          // making the white housing read grey.
+          toneMappingExposure: 0.75,
         }}
       >
         <Scene />
