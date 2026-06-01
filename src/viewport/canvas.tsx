@@ -174,11 +174,10 @@ function Scene() {
     <>
       <CameraRig />
 
-      {/* Cool neutral-grey canvas — matches the reference render's
-       *  technical-illustration look. No warm tint; the machine is
-       *  a black-and-white industrial subject, not a styled product
-       *  shot. */}
-      <color attach="background" args={['#eef0f2']} />
+      {/* No scene background — the Canvas is transparent (gl.alpha=true
+       *  below) so the app's --bg-muted shines through. Setting a 3D
+       *  background colour here would visibly disagree with the shell
+       *  the moment the token changes. */}
 
       {/* High-contrast lighting on purpose. The reference reads as a
        *  monochrome blueprint render: strong key, near-zero fill, the
@@ -252,6 +251,10 @@ export function Viewport() {
         gl={{
           antialias: true,
           powerPreference: 'high-performance',
+          // alpha=true so the underlying app surface (--bg-muted)
+          // shows through the canvas — keeps the 3D backdrop perfectly
+          // in sync with the rest of the shell.
+          alpha: true,
           // 0.92 keeps the white housing crisp-white in the reference
           // while the strong key light still carves the dark frame
           // into deep black. Anything north of 1.0 bleeds the panels.
