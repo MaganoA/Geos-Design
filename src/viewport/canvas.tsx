@@ -173,13 +173,52 @@ function Scene() {
   return (
     <>
       <CameraRig />
-      <Environment preset="studio" background={false} />
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[6, 10, 4]} intensity={1.1} castShadow={false} />
+
+      {/* No scene background — the Canvas is transparent (gl.alpha=true
+       *  below) so the app's --bg-muted shines through. Setting a 3D
+       *  background colour here would visibly disagree with the shell
+       *  the moment the token changes. */}
+
+      {/* High-contrast lighting on purpose. The reference reads as a
+       *  monochrome blueprint render: strong key, near-zero fill, the
+       *  hemi only floats the up-facing dark parts off pure black. */}
+      <hemisphereLight
+        args={['#ffffff', '#c2c6cc', 0.16]}
+        position={[0, 1, 0]}
+      />
+      <directionalLight
+        position={[9, 14, 4]}
+        intensity={2.0}
+        castShadow={false}
+      />
+      <directionalLight
+        position={[-6, 6, -3]}
+        intensity={0.12}
+        castShadow={false}
+      />
+
+      {/* Environment near-zero — the reference has no visible HDR sheen.
+       *  A whisper (0.08) keeps PBR maths from going matte-flat on
+       *  curved metal parts. */}
+      <Environment
+        preset="apartment"
+        background={false}
+        environmentIntensity={0.08}
+      />
+
       <SelectionOutline>
         <MachineModelSuspense onIndex={setMeshIndex} />
       </SelectionOutline>
-      <ContactShadows position={[0, 0, 0]} opacity={0.35} blur={2.5} far={4} />
+
+      {/* Subtle, crisp contact shadow only. The reference's drop is a
+       *  hairline under the machine, not a wash under the whole base —
+       *  so we cut opacity nearly in half and tighten the blur. */}
+      <ContactShadows
+        position={[0, 0.01, 0]}
+        opacity={0.38}
+        blur={1.4}
+        far={3}
+      />
       <PerfHud />
     </>
   )
@@ -209,7 +248,18 @@ export function Viewport() {
     >
       <Canvas
         dpr={[1, 1.5]}
-        gl={{ antialias: true, powerPreference: 'high-performance' }}
+        gl={{
+          antialias: true,
+          powerPreference: 'high-performance',
+          // alpha=true so the underlying app surface (--bg-muted)
+          // shows through the canvas — keeps the 3D backdrop perfectly
+          // in sync with the rest of the shell.
+          alpha: true,
+          // 0.92 keeps the white housing crisp-white in the reference
+          // while the strong key light still carves the dark frame
+          // into deep black. Anything north of 1.0 bleeds the panels.
+          toneMappingExposure: 0.92,
+        }}
       >
         <Scene />
       </Canvas>

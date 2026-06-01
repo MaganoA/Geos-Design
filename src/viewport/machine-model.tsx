@@ -1,5 +1,6 @@
 import { Suspense, useEffect, useMemo } from 'react'
 import type { ThreeEvent } from '@react-three/fiber'
+import { Mesh, MeshStandardMaterial } from 'three'
 import { allDevices } from '@/devices'
 import { useSelectedDevice } from '@/hooks/use-selected-device'
 import { useSelectionStore } from '@/store/selection-store'
@@ -33,6 +34,27 @@ export function MachineModel({ onIndex }: MachineModelProps) {
     () => buildDeviceMeshIndex(scene, allDevices().map((d) => d.meta)),
     [scene],
   )
+
+  // Dial the GLB's HDR coupling down without flattening its native
+  // roughness palette. The asset already authors dark steel vs. white
+  // housing with different roughness values; clobbering them would
+  // erase the contrast that makes the render read as a technical
+  // illustration. We *only* tamp envMapIntensity so the (near-zero)
+  // scene environment doesn't lift the blacks into greys.
+  useEffect(() => {
+    scene.traverse((obj) => {
+      if (!(obj instanceof Mesh)) return
+      const mats = Array.isArray(obj.material) ? obj.material : [obj.material]
+      for (const m of mats) {
+        if (m instanceof MeshStandardMaterial) {
+          // Tighter clamp so the dark steel frame doesn't pick up any
+          // HDR reflection and lift into mid-grey.
+          m.envMapIntensity = 0.12
+          m.needsUpdate = true
+        }
+      }
+    })
+  }, [scene])
 
   useEffect(() => {
     onIndex?.(index)

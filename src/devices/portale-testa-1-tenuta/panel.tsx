@@ -10,10 +10,12 @@ const MODALITA_LABEL: Record<PortaleTesta1TenutaState['modalita'], string> = {
   niente: 'Niente',
 }
 
-// Arc colour echoes the mode: emerald while pulling vacuum, sky while
-// blowing, muted stone when idle. Keeps the gauge a glanceable readout.
+// Single colour family across all modes per the HMI rule: data
+// visualisations are always blue (emerald is reserved for the active
+// status badge under the title). Muted stone when idle so the gauge
+// still backs off visually for the niente mode.
 const MODALITA_ARC: Record<PortaleTesta1TenutaState['modalita'], string> = {
-  aspirazione: 'text-emerald-500',
+  aspirazione: 'text-blue-500',
   soffio: 'text-sky-500',
   niente: 'text-stone-400',
 }

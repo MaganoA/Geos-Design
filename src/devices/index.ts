@@ -58,6 +58,22 @@ import * as elettroserratureMeta from './sicurezza-elettroserrature/meta'
 
 import { Panel as StubPanel } from './_stub/panel'
 import { Toolbar as StubToolbar } from './_stub/toolbar'
+import { Panel as BaiaGrezziPanel } from './baia-grezzi/panel'
+import { Panel as BaiaGrezziVassoioPanel } from './baia-grezzi-vassoio/panel'
+import { Panel as BaiaGrezziFotocellulePanel } from './baia-grezzi-fotocellule/panel'
+import { Panel as BaiaGrezziTastatorePanel } from './baia-grezzi-tastatore/panel'
+import { Toolbar as BaiaGrezziTastatoreToolbar } from './baia-grezzi-tastatore/toolbar'
+import { Panel as BaiaLavoratiPanel } from './baia-lavorati/panel'
+import { Panel as BaiaLavoratiVassoioPanel } from './baia-lavorati-vassoio/panel'
+import { Panel as DispenserDistanzialiPanel } from './dispenser-distanziali/panel'
+import { Toolbar as DispenserDistanzialiToolbar } from './dispenser-distanziali/toolbar'
+import { Panel as ErogazioneResinaPanel } from './erogazione-resina/panel'
+import { Panel as ErogazioneResinaSerbatoioPanel } from './erogazione-resina-serbatoio/panel'
+import { Toolbar as ErogazioneResinaSerbatoioToolbar } from './erogazione-resina-serbatoio/toolbar'
+import { Panel as ErogazioneResinaErogatorePanel } from './erogazione-resina-erogatore/panel'
+import { Toolbar as ErogazioneResinaErogatoreToolbar } from './erogazione-resina-erogatore/toolbar'
+import { Panel as ErogazioneResinaAlimentatoreInsertiPanel } from './erogazione-resina-alimentatore-inserti/panel'
+import { Toolbar as ErogazioneResinaAlimentatoreInsertiToolbar } from './erogazione-resina-alimentatore-inserti/toolbar'
 import { Panel as PortaleTesta1Panel } from './portale-testa-1/panel'
 import { Toolbar as PortaleTesta1Toolbar } from './portale-testa-1/toolbar'
 import { Panel as PortaleTesta1TenutaPanel } from './portale-testa-1-tenuta/panel'
@@ -165,7 +181,11 @@ const registry: Record<string, RegisteredDevice> = {
     Panel: RobotPanel as React.ComponentType<{ label: string }>,
     Toolbar: RobotToolbar,
   },
-  'dispenser-distanziali':       entry(dispenserMeta.meta),
+  'dispenser-distanziali': {
+    meta: dispenserMeta.meta,
+    Panel: DispenserDistanzialiPanel as React.ComponentType<{ label: string }>,
+    Toolbar: DispenserDistanzialiToolbar,
+  },
 
   // Tool stand → 4 gripper presets
   'tool-stand': {
@@ -195,19 +215,59 @@ const registry: Record<string, RegisteredDevice> = {
   },
 
   // Sistema di erogazione resina → serbatoio / erogatore / alimentatore inserti
-  'erogazione-resina':                       entry(resinaMeta.meta),
-  'erogazione-resina-serbatoio':             entry(resinaSerbatoioMeta.meta),
-  'erogazione-resina-erogatore':             entry(resinaErogatoreMeta.meta),
-  'erogazione-resina-alimentatore-inserti':  entry(resinaAlimentatoreMeta.meta),
+  'erogazione-resina': {
+    meta: resinaMeta.meta,
+    Panel: ErogazioneResinaPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'erogazione-resina-serbatoio': {
+    meta: resinaSerbatoioMeta.meta,
+    Panel: ErogazioneResinaSerbatoioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ErogazioneResinaSerbatoioToolbar,
+  },
+  'erogazione-resina-erogatore': {
+    meta: resinaErogatoreMeta.meta,
+    Panel: ErogazioneResinaErogatorePanel as React.ComponentType<{ label: string }>,
+    Toolbar: ErogazioneResinaErogatoreToolbar,
+  },
+  'erogazione-resina-alimentatore-inserti': {
+    meta: resinaAlimentatoreMeta.meta,
+    Panel: ErogazioneResinaAlimentatoreInsertiPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ErogazioneResinaAlimentatoreInsertiToolbar,
+  },
 
   // Baie → grezzi (vassoio, fotocellule, tastatore) / lavorati (vassoio)
   baie:                          entry(baieMeta.meta),
-  'baia-grezzi':                 entry(baiaGrezziMeta.meta),
-  'baia-grezzi-vassoio':         entry(baiaGrezziVassoioMeta.meta),
-  'baia-grezzi-fotocellule':     entry(baiaGrezziFotocelluleMeta.meta),
-  'baia-grezzi-tastatore':       entry(baiaGrezziTastatoreMeta.meta),
-  'baia-lavorati':               entry(baiaLavoratiMeta.meta),
-  'baia-lavorati-vassoio':       entry(baiaLavoratiVassoioMeta.meta),
+  'baia-grezzi': {
+    meta: baiaGrezziMeta.meta,
+    Panel: BaiaGrezziPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'baia-grezzi-vassoio': {
+    meta: baiaGrezziVassoioMeta.meta,
+    Panel: BaiaGrezziVassoioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'baia-grezzi-fotocellule': {
+    meta: baiaGrezziFotocelluleMeta.meta,
+    Panel: BaiaGrezziFotocellulePanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'baia-grezzi-tastatore': {
+    meta: baiaGrezziTastatoreMeta.meta,
+    Panel: BaiaGrezziTastatorePanel as React.ComponentType<{ label: string }>,
+    Toolbar: BaiaGrezziTastatoreToolbar,
+  },
+  'baia-lavorati': {
+    meta: baiaLavoratiMeta.meta,
+    Panel: BaiaLavoratiPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'baia-lavorati-vassoio': {
+    meta: baiaLavoratiVassoioMeta.meta,
+    Panel: BaiaLavoratiVassoioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
 
   // Piani aspirati → piano 1 / piano 2
   'piani-aspirati':              entry(pianiAspiratiMeta.meta),

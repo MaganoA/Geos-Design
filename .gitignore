@@ -39,3 +39,4 @@ test-results/
 # Impeccable live mode runtime state (config.json is kept as project setup)
 .impeccable/live/sessions/
 .impeccable/live/server.json
+.vercel

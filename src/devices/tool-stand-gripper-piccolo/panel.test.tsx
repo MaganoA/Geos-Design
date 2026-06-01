@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { render, screen, cleanup, fireEvent } from '@testing-library/react'
+import { render, screen, cleanup } from '@testing-library/react'
 import { useMachineStore } from '@/store/machine-store'
 import { initialState } from './state'
 import { Panel } from './panel'
@@ -7,7 +7,7 @@ import { Panel } from './panel'
 describe('ToolStandGripperPiccolo Panel', () => {
   afterEach(cleanup)
 
-  it('shows stato, apertura dx/dy, and 4 valve cells', () => {
+  it('shows stato and apertura dx/dy (valvole live in the 3D scene)', () => {
     useMachineStore
       .getState()
       .setDevice('tool-stand-gripper-piccolo', initialState)
@@ -16,19 +16,8 @@ describe('ToolStandGripperPiccolo Panel', () => {
     expect(screen.getByText('A magazzino')).toBeInTheDocument()
     // Both dx and dy default to 60 → two matches.
     expect(screen.getAllByText('60 mm')).toHaveLength(2)
-    expect(screen.getAllByRole('switch')).toHaveLength(4)
-  })
-
-  it('tapping a valve toggles its attiva flag', () => {
-    useMachineStore
-      .getState()
-      .setDevice('tool-stand-gripper-piccolo', initialState)
-    render(<Panel />)
-    const cells = screen.getAllByRole('switch')
-    fireEvent.click(cells[2]!)
-    const after = useMachineStore.getState().devices[
-      'tool-stand-gripper-piccolo'
-    ] as typeof initialState
-    expect(after.ventose[2]!.attiva).toBe(true)
+    // Valvole grid was removed from the panel — its state is now shown
+    // only in the 3D viewport.
+    expect(screen.queryAllByRole('switch')).toHaveLength(0)
   })
 })
