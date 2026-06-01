@@ -35,6 +35,17 @@ import { useRegisterToolStandGripperPiccolo } from './devices/tool-stand-gripper
 import { useRegisterToolStandGripperMedio } from './devices/tool-stand-gripper-medio/register'
 import { useRegisterToolStandGripperGrande } from './devices/tool-stand-gripper-grande/register'
 import { useRegisterToolStandGripperDistanziali } from './devices/tool-stand-gripper-distanziali/register'
+import { useRegisterBaiaGrezzi } from './devices/baia-grezzi/register'
+import { useRegisterBaiaGrezziVassoio } from './devices/baia-grezzi-vassoio/register'
+import { useRegisterBaiaGrezziFotocellule } from './devices/baia-grezzi-fotocellule/register'
+import { useRegisterBaiaGrezziTastatore } from './devices/baia-grezzi-tastatore/register'
+import { useRegisterBaiaLavorati } from './devices/baia-lavorati/register'
+import { useRegisterBaiaLavoratiVassoio } from './devices/baia-lavorati-vassoio/register'
+import { useRegisterDispenserDistanziali } from './devices/dispenser-distanziali/register'
+import { useRegisterErogazioneResina } from './devices/erogazione-resina/register'
+import { useRegisterErogazioneResinaSerbatoio } from './devices/erogazione-resina-serbatoio/register'
+import { useRegisterErogazioneResinaErogatore } from './devices/erogazione-resina-erogatore/register'
+import { useRegisterErogazioneResinaAlimentatoreInserti } from './devices/erogazione-resina-alimentatore-inserti/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
@@ -86,6 +97,17 @@ export default function App() {
   useRegisterToolStandGripperMedio()
   useRegisterToolStandGripperGrande()
   useRegisterToolStandGripperDistanziali()
+  useRegisterBaiaGrezzi()
+  useRegisterBaiaGrezziVassoio()
+  useRegisterBaiaGrezziFotocellule()
+  useRegisterBaiaGrezziTastatore()
+  useRegisterBaiaLavorati()
+  useRegisterBaiaLavoratiVassoio()
+  useRegisterDispenserDistanziali()
+  useRegisterErogazioneResina()
+  useRegisterErogazioneResinaSerbatoio()
+  useRegisterErogazioneResinaErogatore()
+  useRegisterErogazioneResinaAlimentatoreInserti()
 
   // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
   // absorbs the freed width, so the 3D Canvas grows into it. The whole
