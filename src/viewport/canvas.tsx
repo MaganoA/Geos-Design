@@ -181,43 +181,45 @@ function Scene() {
       <color attach="background" args={['#eef0f2']} />
 
       {/* High-contrast lighting on purpose. The reference reads as a
-       *  monochrome blueprint render: strong key, almost-no fill, just
-       *  enough hemi so the up-facing dark parts don't crush to pure
-       *  black. Anything more than this and the GLB's dark steel frame
-       *  reflects too much HDR and reads grey. */}
+       *  monochrome blueprint render: strong key, near-zero fill, the
+       *  hemi only floats the up-facing dark parts off pure black. */}
       <hemisphereLight
-        args={['#ffffff', '#c8ccd0', 0.22]}
+        args={['#ffffff', '#c2c6cc', 0.16]}
         position={[0, 1, 0]}
       />
       <directionalLight
         position={[9, 14, 4]}
-        intensity={1.6}
+        intensity={2.0}
         castShadow={false}
       />
       <directionalLight
         position={[-6, 6, -3]}
-        intensity={0.18}
+        intensity={0.12}
         castShadow={false}
       />
 
-      {/* Environment kept at near-zero intensity. The reference has no
-       *  visible reflections — it's a matte technical render. Leaving a
-       *  whisper of HDR (0.12) keeps PBR maths happy on metal parts
-       *  without lifting the blacks. */}
+      {/* Environment near-zero — the reference has no visible HDR sheen.
+       *  A whisper (0.08) keeps PBR maths from going matte-flat on
+       *  curved metal parts. */}
       <Environment
         preset="apartment"
         background={false}
-        environmentIntensity={0.12}
+        environmentIntensity={0.08}
       />
 
       <SelectionOutline>
         <MachineModelSuspense onIndex={setMeshIndex} />
       </SelectionOutline>
 
-      {/* Contact shadow grounds the model. Slightly tighter blur and
-       *  higher opacity so the shadow reads as the crisp drop you see
-       *  in the reference instead of a soft puddle. */}
-      <ContactShadows position={[0, 0, 0]} opacity={0.65} blur={1.8} far={4} />
+      {/* Subtle, crisp contact shadow only. The reference's drop is a
+       *  hairline under the machine, not a wash under the whole base —
+       *  so we cut opacity nearly in half and tighten the blur. */}
+      <ContactShadows
+        position={[0, 0.01, 0]}
+        opacity={0.38}
+        blur={1.4}
+        far={3}
+      />
       <PerfHud />
     </>
   )
@@ -250,10 +252,10 @@ export function Viewport() {
         gl={{
           antialias: true,
           powerPreference: 'high-performance',
-          // Pinned exposure trims the white panels back to the soft
-          // off-white of the reference render. Lower than 0.7 starts
-          // making the white housing read grey.
-          toneMappingExposure: 0.75,
+          // 0.92 keeps the white housing crisp-white in the reference
+          // while the strong key light still carves the dark frame
+          // into deep black. Anything north of 1.0 bleeds the panels.
+          toneMappingExposure: 0.92,
         }}
       >
         <Scene />

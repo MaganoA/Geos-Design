@@ -47,7 +47,9 @@ export function MachineModel({ onIndex }: MachineModelProps) {
       const mats = Array.isArray(obj.material) ? obj.material : [obj.material]
       for (const m of mats) {
         if (m instanceof MeshStandardMaterial) {
-          m.envMapIntensity = 0.25
+          // Tighter clamp so the dark steel frame doesn't pick up any
+          // HDR reflection and lift into mid-grey.
+          m.envMapIntensity = 0.12
           m.needsUpdate = true
         }
       }
