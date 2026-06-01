@@ -51,6 +51,13 @@ const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
 // Width of the left rail column. Mirrors gridTemplateColumns below.
 const RAIL_WIDTH = 52
+// Floating LeftPanel width (matches the card in shell/left-panel.tsx) plus
+// the 16 px inset-4 it sits at. The bottom dock skips over this band so it
+// centres in the *visible* 3D area between the tree card and the right
+// panel, instead of geometrically across the whole grid cell (which would
+// hide its left edge behind the tree).
+const LEFT_PANEL_WIDTH = 348
+const LEFT_PANEL_INSET = 16
 
 // Motion choreography for the TopBar collapse/expand. Asymmetric on
 // purpose: opening is gentler (the user is about to read), closing is
@@ -180,16 +187,15 @@ export default function App() {
       <aside style={{ gridArea: 'right' }} className="bg-transparent">
         <RightPanel />
       </aside>
-      {/* Bottom toolbar — fixed to the viewport so its centering covers
-        the full horizontal band between the left rail and the right
-        edge of the right panel, instead of just the 1fr "left" grid
-        cell (which left it visibly off-centre once the right panel
-        opened). The right offset animates with the right column so
+      {/* Bottom toolbar — centred inside the *visible* 3D container,
+        i.e. the band between the floating LeftPanel's right edge and
+        the RightPanel (or the viewport edge when the right column is
+        collapsed). The right offset animates with the right column so
         the toolbar slides into its new centre as the panel reveals. */}
       <div
         className="pointer-events-none fixed bottom-0 z-20 flex justify-center pb-4"
         style={{
-          left: RAIL_WIDTH,
+          left: RAIL_WIDTH + LEFT_PANEL_INSET + LEFT_PANEL_WIDTH,
           right: rightColVisible ? RIGHT_PANEL_WIDTH : 0,
           transition: 'right 320ms cubic-bezier(0.32, 0.72, 0, 1)',
         }}
