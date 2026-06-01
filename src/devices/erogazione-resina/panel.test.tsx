@@ -11,7 +11,8 @@ describe('ErogazioneResina Panel', () => {
     expect(screen.getByText('Sistema di erogazione')).toBeInTheDocument()
     expect(screen.getByText('ID resina')).toBeInTheDocument()
     expect(screen.getByText('RES-EPX-228')).toBeInTheDocument()
-    // codiceStato + pressione both render "OK" → assert at least one
-    expect(screen.getAllByText('OK').length).toBeGreaterThan(0)
+    expect(screen.getByText('OK')).toBeInTheDocument()
+    // codiceStato is the right-panel badge — must NOT leak into the body
+    expect(screen.queryByText('Codice stato')).not.toBeInTheDocument()
   })
 })

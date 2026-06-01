@@ -1,10 +1,7 @@
 import { DataRow } from '@/components/patterns/data-row'
 import { DataSection } from '@/components/patterns/data-section'
 import { useDeviceState } from '@/hooks/use-device-state'
-import { useMachineStore } from '@/store/machine-store'
-import { cn } from '@/lib/cn'
 import {
-  VALVE_COUNT,
   type GripperStato,
   type ToolStandGripperugrandeState,
 } from './state'
@@ -29,58 +26,6 @@ export function Panel() {
         <DataRow label="Apertura dx" value={`${s.dx} mm`} />
         <DataRow label="Apertura dy" value={`${s.dy} mm`} />
       </DataSection>
-
-      <DataSection title="Valvole">
-        <ValveGrid ventose={s.ventose} />
-      </DataSection>
-    </div>
-  )
-}
-
-/**
- * Per-valve switches: tap toggles `attiva`. Only the modality (driven
- * by the robot head's vacuum subsystem) decides whether attiva actually
- * draws a vacuum — this grid surfaces the operator's intent.
- */
-function ValveGrid({
-  ventose,
-}: {
-  ventose: ToolStandGripperugrandeState['ventose']
-}) {
-  function toggleValvola(index: number) {
-    const store = useMachineStore.getState()
-    const prev = store.devices['tool-stand-gripper-grande'] as
-      | ToolStandGripperugrandeState
-      | undefined
-    if (!prev) return
-    const next = prev.ventose.map((v, i) =>
-      i === index ? { ...v, attiva: !v.attiva } : v,
-    )
-    store.setDevice('tool-stand-gripper-grande', { ...prev, ventose: next })
-  }
-
-  return (
-    <div
-      className="grid gap-1.5 py-2"
-      style={{ gridTemplateColumns: `repeat(${VALVE_COUNT}, 1fr)` }}
-    >
-      {ventose.map((v, i) => (
-        <button
-          key={i}
-          type="button"
-          role="switch"
-          aria-checked={v.attiva}
-          aria-label={`Valvola ${i + 1}`}
-          onClick={() => toggleValvola(i)}
-          className={cn(
-            'aspect-square rounded-full border transition-all',
-            'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--text-default)]',
-            v.attiva
-              ? 'border-emerald-500 bg-emerald-400/80'
-              : 'border-[var(--border-default)] bg-[var(--bg-muted)]',
-          )}
-        />
-      ))}
     </div>
   )
 }

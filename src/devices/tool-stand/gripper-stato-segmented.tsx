@@ -21,14 +21,11 @@ interface Props {
 /**
  * Three-way segmented control for the gripper's operating mode while
  * mounted. Built on the shadcn Tabs primitive (no content panels — we
- * only use the trigger row as a single-select segmented). Each trigger
- * carries an inline-SVG icon next to its label so the operator's eye
- * can find a mode by glance, not by reading three words side-by-side.
+ * only use the trigger row as a single-select segmented).
  *
- * Mapping:
- *   Aspirazione → 'vuoto'   (down-arrow icon: drawing material in)
- *   Soffio      → 'soffio'  (up-arrow with flare: blowing out)
- *   Nessuno     → 'niente'  (horizontal dash: idle)
+ * Same visual language as the tenuta segmented in the bottom dock:
+ * emerald LED dot + normal-case label, so the two surfaces read as
+ * the same primitive across the HMI.
  *
  * Hidden when the gripper is in magazzino — switching mode on an
  * unmounted gripper makes no sense and surfacing the control would
@@ -59,74 +56,33 @@ export function GripperStatoSegmented({ kind }: Props) {
       }}
       className={cn(disabled && 'pointer-events-none opacity-50')}
     >
-      <TabsList>
-        {ORDER.map((v) => (
-          <TabsTrigger
-            key={v}
-            value={v}
-            disabled={disabled}
-            className="gap-2 text-xs uppercase tracking-wider"
-          >
-            <StatoIcon mode={v} />
-            {LABEL[v]}
-          </TabsTrigger>
-        ))}
+      <TabsList className="h-[52px] gap-1 rounded-[var(--radius-md)] p-1">
+        {ORDER.map((v) => {
+          const active = v === stato
+          return (
+            <TabsTrigger
+              key={v}
+              value={v}
+              disabled={disabled}
+              className="min-w-[120px] gap-2 px-4 text-[14px] font-medium"
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  'h-2 w-2 shrink-0 rounded-full transition-colors',
+                  active ? 'bg-emerald-400' : 'bg-stone-300',
+                )}
+                style={
+                  active
+                    ? { boxShadow: '0 0 6px rgb(74 222 128 / 0.65)' }
+                    : undefined
+                }
+              />
+              {LABEL[v]}
+            </TabsTrigger>
+          )
+        })}
       </TabsList>
     </Tabs>
-  )
-}
-
-function StatoIcon({ mode }: { mode: OperatingStato }) {
-  if (mode === 'vuoto') {
-    // Aspirazione — material drawn into the gripper: a down-arrow
-    // converging into a small dot.
-    return (
-      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-        <path
-          d="M7 2 L7 9 M4 6 L7 9 L10 6"
-          stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-        <circle cx="7" cy="11.5" r="1" fill="currentColor" />
-      </svg>
-    )
-  }
-  if (mode === 'soffio') {
-    // Soffio — outward blast: an up-arrow with a small flare base.
-    return (
-      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-        <path
-          d="M7 12 L7 5 M4 8 L7 5 L10 8"
-          stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-        <path
-          d="M4.5 3 L7 1.5 L9.5 3"
-          stroke="currentColor"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-          opacity="0.6"
-        />
-      </svg>
-    )
-  }
-  // Nessuno — idle, no flow either direction.
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
-      <path
-        d="M3 7 L11 7"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-    </svg>
   )
 }

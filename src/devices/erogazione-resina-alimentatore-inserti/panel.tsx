@@ -16,7 +16,6 @@ export function Panel() {
     <div className="flex flex-col gap-3 px-3 pt-1 pb-3">
       <DataSection title="Alimentatore inserti">
         <DataRow label="Stato" value={s.acceso ? 'Acceso' : 'Spento'} />
-        <DataRow label="Codice stato" value={s.codiceStato} />
         <DataRow
           label="Flexpin"
           value={`${s.idFlexpin} — ${FLEXPIN_LABEL[s.idFlexpin]}`}

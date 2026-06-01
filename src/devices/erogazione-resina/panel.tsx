@@ -10,7 +10,6 @@ export function Panel() {
   return (
     <div className="flex flex-col gap-3 px-3 pt-1 pb-3">
       <DataSection title="Sistema di erogazione">
-        <DataRow label="Codice stato" value={s.codiceStato} />
         <DataRow
           label="Pressione"
           value={s.pressioneOk ? 'OK' : 'Bassa'}
