@@ -173,13 +173,53 @@ function Scene() {
   return (
     <>
       <CameraRig />
-      <Environment preset="studio" background={false} />
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[6, 10, 4]} intensity={1.1} castShadow={false} />
+
+      {/* Warm-grey backdrop — the machine renders mostly in cool whites,
+       *  so a slightly warm canvas separates the silhouette from the
+       *  background without competing for attention. */}
+      <color attach="background" args={['#f3f1ee']} />
+
+      {/* Three-point setup tuned for an industrial HMI render — clarity
+       *  over photoreal. Key light is off the camera axis so the model
+       *  picks up real form shading instead of flat front-lighting. */}
+      <hemisphereLight
+        args={['#ffffff', '#d8d6d2', 0.35]}
+        position={[0, 1, 0]}
+      />
+      <directionalLight
+        position={[8, 14, -2]}
+        intensity={1.4}
+        castShadow={false}
+      />
+      <directionalLight
+        position={[-7, 5, 4]}
+        intensity={0.45}
+        castShadow={false}
+      />
+      <directionalLight
+        position={[-2, 6, -8]}
+        intensity={0.25}
+        castShadow={false}
+      />
+
+      {/* Environment is for PBR reflections only — drei's `studio` preset
+       *  is far too bright as a primary light source. `apartment` is
+       *  softer; the intensity is dialled down so the HDR shows up in
+       *  highlights without dominating the diffuse term. */}
+      <Environment
+        preset="apartment"
+        background={false}
+        environmentIntensity={0.35}
+      />
+
       <SelectionOutline>
         <MachineModelSuspense onIndex={setMeshIndex} />
       </SelectionOutline>
-      <ContactShadows position={[0, 0, 0]} opacity={0.35} blur={2.5} far={4} />
+
+      {/* Contact shadow grounds the model. Opacity bumped from 0.35 so
+       *  the machine reads as resting on the floor, not floating above
+       *  it under the new lower-exposure lighting. */}
+      <ContactShadows position={[0, 0, 0]} opacity={0.55} blur={2.4} far={4} />
       <PerfHud />
     </>
   )
@@ -209,7 +249,14 @@ export function Viewport() {
     >
       <Canvas
         dpr={[1, 1.5]}
-        gl={{ antialias: true, powerPreference: 'high-performance' }}
+        gl={{
+          antialias: true,
+          powerPreference: 'high-performance',
+          // ACES is R3F's default; pinning the exposure here trims the
+          // highlights without muddying the midtones. The machine's
+          // white metals stay white but stop blooming under the HDR.
+          toneMappingExposure: 0.85,
+        }}
       >
         <Scene />
       </Canvas>
