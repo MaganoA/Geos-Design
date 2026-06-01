@@ -96,6 +96,12 @@
   --status-error:   var(--red-500);
   --status-offline: var(--stone-500);
 
+  /* Brand accent — used for live-value indicators (range bar fills,
+   * angle-dial markers) where the eye needs to find "now" against the
+   * mostly-monochrome HMI chrome. One hue, two tones. */
+  --accent:      #437dfc;
+  --accent-soft: oklch(0.88 0.04 263);
+
   /* Elevation */
   --shadow-button:
     0 1px 2px 0 rgb(0 0 0 / 0.05),

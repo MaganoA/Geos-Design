@@ -19,4 +19,15 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // shadcn/ui components co-export their CVA variants alongside the
+    // component (e.g. `Button` + `buttonVariants`). That trips the
+    // react-refresh/only-export-components rule; this is the canonical
+    // pattern and harmless for HMR in practice, so we relax it inside
+    // the design-system surface only.
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

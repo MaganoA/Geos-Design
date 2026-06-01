@@ -11,6 +11,7 @@ import { TopBarVariantB } from './preview/topbar-b'
 import { TopBarVariantC } from './preview/topbar-c'
 import { TopBarVariantD } from './preview/topbar-d'
 import { ToolbarVariants } from './preview/toolbar-variants'
+import { VelocitaVariants } from './preview/velocita-variants'
 import { Viewport } from './viewport/canvas'
 import { useSelectedDevice } from './hooks/use-selected-device'
 import { useRegisterPortaleTesta1 } from './devices/portale-testa-1/register'
@@ -19,9 +20,44 @@ import { useRegisterPortaleTesta1Erogatore } from './devices/portale-testa-1-ero
 import { useRegisterPortaleTesta2 } from './devices/portale-testa-2/register'
 import { useRegisterPortaleTesta2GripperPin } from './devices/portale-testa-2-gripper-pin/register'
 import { useRegisterPortaleTesta2LampadeUv } from './devices/portale-testa-2-lampade-uv/register'
+import { useRegisterSpeed } from './devices/speed/register'
+import { useRegisterSpeedSoffiatore } from './devices/speed-soffiatore/register'
+import { useRegisterSpeedBarraLavaggio } from './devices/speed-barra-lavaggio/register'
+import { useRegisterSicurezzaElettroserrature } from './devices/sicurezza-elettroserrature/register'
+import { useRegisterPianoAspirato1 } from './devices/piano-aspirato-1/register'
+import { useRegisterPianoAspirato2 } from './devices/piano-aspirato-2/register'
+import { useRegisterImpiantoVuoto } from './devices/impianto-vuoto/register'
+import { useRegisterImpiantoAcqua } from './devices/impianto-acqua/register'
+import { useRegisterImpiantoAria } from './devices/impianto-aria/register'
+import { useRegisterRobot } from './devices/robot/register'
+import { useRegisterToolStand } from './devices/tool-stand/register'
+import { useRegisterToolStandGripperPiccolo } from './devices/tool-stand-gripper-piccolo/register'
+import { useRegisterToolStandGripperMedio } from './devices/tool-stand-gripper-medio/register'
+import { useRegisterToolStandGripperGrande } from './devices/tool-stand-gripper-grande/register'
+import { useRegisterToolStandGripperDistanziali } from './devices/tool-stand-gripper-distanziali/register'
+import { useRegisterBaiaGrezzi } from './devices/baia-grezzi/register'
+import { useRegisterBaiaGrezziVassoio } from './devices/baia-grezzi-vassoio/register'
+import { useRegisterBaiaGrezziFotocellule } from './devices/baia-grezzi-fotocellule/register'
+import { useRegisterBaiaGrezziTastatore } from './devices/baia-grezzi-tastatore/register'
+import { useRegisterBaiaLavorati } from './devices/baia-lavorati/register'
+import { useRegisterBaiaLavoratiVassoio } from './devices/baia-lavorati-vassoio/register'
+import { useRegisterDispenserDistanziali } from './devices/dispenser-distanziali/register'
+import { useRegisterErogazioneResina } from './devices/erogazione-resina/register'
+import { useRegisterErogazioneResinaSerbatoio } from './devices/erogazione-resina-serbatoio/register'
+import { useRegisterErogazioneResinaErogatore } from './devices/erogazione-resina-erogatore/register'
+import { useRegisterErogazioneResinaAlimentatoreInserti } from './devices/erogazione-resina-alimentatore-inserti/register'
 
 const TOP_BAR_HEIGHT = 140
 const RIGHT_PANEL_WIDTH = 368
+// Width of the left rail column. Mirrors gridTemplateColumns below.
+const RAIL_WIDTH = 52
+// Floating LeftPanel width (matches the card in shell/left-panel.tsx) plus
+// the 16 px inset-4 it sits at. The bottom dock skips over this band so it
+// centres in the *visible* 3D area between the tree card and the right
+// panel, instead of geometrically across the whole grid cell (which would
+// hide its left edge behind the tree).
+const LEFT_PANEL_WIDTH = 348
+const LEFT_PANEL_INSET = 16
 
 // Motion choreography for the TopBar collapse/expand. Asymmetric on
 // purpose: opening is gentler (the user is about to read), closing is
@@ -53,6 +89,32 @@ export default function App() {
   useRegisterPortaleTesta2()
   useRegisterPortaleTesta2GripperPin()
   useRegisterPortaleTesta2LampadeUv()
+  useRegisterSpeed()
+  useRegisterSpeedSoffiatore()
+  useRegisterSpeedBarraLavaggio()
+  useRegisterSicurezzaElettroserrature()
+  useRegisterPianoAspirato1()
+  useRegisterPianoAspirato2()
+  useRegisterImpiantoVuoto()
+  useRegisterImpiantoAcqua()
+  useRegisterImpiantoAria()
+  useRegisterRobot()
+  useRegisterToolStand()
+  useRegisterToolStandGripperPiccolo()
+  useRegisterToolStandGripperMedio()
+  useRegisterToolStandGripperGrande()
+  useRegisterToolStandGripperDistanziali()
+  useRegisterBaiaGrezzi()
+  useRegisterBaiaGrezziVassoio()
+  useRegisterBaiaGrezziFotocellule()
+  useRegisterBaiaGrezziTastatore()
+  useRegisterBaiaLavorati()
+  useRegisterBaiaLavoratiVassoio()
+  useRegisterDispenserDistanziali()
+  useRegisterErogazioneResina()
+  useRegisterErogazioneResinaSerbatoio()
+  useRegisterErogazioneResinaErogatore()
+  useRegisterErogazioneResinaAlimentatoreInserti()
 
   // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
   // absorbs the freed width, so the 3D Canvas grows into it. The whole
@@ -66,6 +128,7 @@ export default function App() {
     if (preview === 'topbar-c') return <TopBarVariantC />
     if (preview === 'topbar-d') return <TopBarVariantD />
     if (preview === 'toolbar-variants') return <ToolbarVariants />
+    if (preview === 'velocita-variants') return <VelocitaVariants />
   }
 
   const t = topBarCollapsed ? TRANSITION_CLOSE : TRANSITION_OPEN
@@ -120,15 +183,27 @@ export default function App() {
         <aside className="pointer-events-auto absolute top-4 bottom-4 left-4 z-10">
           <LeftPanel />
         </aside>
-        <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 flex justify-center pb-4">
-          <div className="pointer-events-auto">
-            <BottomToolbar />
-          </div>
-        </div>
       </section>
       <aside style={{ gridArea: 'right' }} className="bg-transparent">
         <RightPanel />
       </aside>
+      {/* Bottom toolbar — centred inside the *visible* 3D container,
+        i.e. the band between the floating LeftPanel's right edge and
+        the RightPanel (or the viewport edge when the right column is
+        collapsed). The right offset animates with the right column so
+        the toolbar slides into its new centre as the panel reveals. */}
+      <div
+        className="pointer-events-none fixed bottom-0 z-20 flex justify-center pb-4"
+        style={{
+          left: RAIL_WIDTH + LEFT_PANEL_INSET + LEFT_PANEL_WIDTH,
+          right: rightColVisible ? RIGHT_PANEL_WIDTH : 0,
+          transition: 'right 320ms cubic-bezier(0.32, 0.72, 0, 1)',
+        }}
+      >
+        <div className="pointer-events-auto">
+          <BottomToolbar />
+        </div>
+      </div>
     </div>
   )
 }

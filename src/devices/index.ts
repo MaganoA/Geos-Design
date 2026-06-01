@@ -58,6 +58,22 @@ import * as elettroserratureMeta from './sicurezza-elettroserrature/meta'
 
 import { Panel as StubPanel } from './_stub/panel'
 import { Toolbar as StubToolbar } from './_stub/toolbar'
+import { Panel as BaiaGrezziPanel } from './baia-grezzi/panel'
+import { Panel as BaiaGrezziVassoioPanel } from './baia-grezzi-vassoio/panel'
+import { Panel as BaiaGrezziFotocellulePanel } from './baia-grezzi-fotocellule/panel'
+import { Panel as BaiaGrezziTastatorePanel } from './baia-grezzi-tastatore/panel'
+import { Toolbar as BaiaGrezziTastatoreToolbar } from './baia-grezzi-tastatore/toolbar'
+import { Panel as BaiaLavoratiPanel } from './baia-lavorati/panel'
+import { Panel as BaiaLavoratiVassoioPanel } from './baia-lavorati-vassoio/panel'
+import { Panel as DispenserDistanzialiPanel } from './dispenser-distanziali/panel'
+import { Toolbar as DispenserDistanzialiToolbar } from './dispenser-distanziali/toolbar'
+import { Panel as ErogazioneResinaPanel } from './erogazione-resina/panel'
+import { Panel as ErogazioneResinaSerbatoioPanel } from './erogazione-resina-serbatoio/panel'
+import { Toolbar as ErogazioneResinaSerbatoioToolbar } from './erogazione-resina-serbatoio/toolbar'
+import { Panel as ErogazioneResinaErogatorePanel } from './erogazione-resina-erogatore/panel'
+import { Toolbar as ErogazioneResinaErogatoreToolbar } from './erogazione-resina-erogatore/toolbar'
+import { Panel as ErogazioneResinaAlimentatoreInsertiPanel } from './erogazione-resina-alimentatore-inserti/panel'
+import { Toolbar as ErogazioneResinaAlimentatoreInsertiToolbar } from './erogazione-resina-alimentatore-inserti/toolbar'
 import { Panel as PortaleTesta1Panel } from './portale-testa-1/panel'
 import { Toolbar as PortaleTesta1Toolbar } from './portale-testa-1/toolbar'
 import { Panel as PortaleTesta1TenutaPanel } from './portale-testa-1-tenuta/panel'
@@ -70,12 +86,49 @@ import { Panel as PortaleTesta2GripperPinPanel } from './portale-testa-2-gripper
 import { Toolbar as PortaleTesta2GripperPinToolbar } from './portale-testa-2-gripper-pin/toolbar'
 import { Panel as PortaleTesta2LampadeUvPanel } from './portale-testa-2-lampade-uv/panel'
 import { Toolbar as PortaleTesta2LampadeUvToolbar } from './portale-testa-2-lampade-uv/toolbar'
+import { Panel as SpeedPanel } from './speed/panel'
+import { Toolbar as SpeedToolbar } from './speed/toolbar'
+import { HeaderExtra as SpeedHeaderExtra } from './speed/header-extra'
+import { Panel as SpeedSoffiatorePanel } from './speed-soffiatore/panel'
+import { Toolbar as SpeedSoffiatoreToolbar } from './speed-soffiatore/toolbar'
+import { Panel as SpeedBarraLavaggioPanel } from './speed-barra-lavaggio/panel'
+import { Toolbar as SpeedBarraLavaggioToolbar } from './speed-barra-lavaggio/toolbar'
+import { Panel as SicurezzaElettroserraturePanel } from './sicurezza-elettroserrature/panel'
+import { Panel as PianoAspirato1Panel } from './piano-aspirato-1/panel'
+import { Toolbar as PianoAspirato1Toolbar } from './piano-aspirato-1/toolbar'
+import { Panel as PianoAspirato2Panel } from './piano-aspirato-2/panel'
+import { Toolbar as PianoAspirato2Toolbar } from './piano-aspirato-2/toolbar'
+import { Panel as ImpiantoVuotoPanel } from './impianto-vuoto/panel'
+import { Toolbar as ImpiantoVuotoToolbar } from './impianto-vuoto/toolbar'
+import { Panel as ImpiantoAcquaPanel } from './impianto-acqua/panel'
+import { Toolbar as ImpiantoAcquaToolbar } from './impianto-acqua/toolbar'
+import { Panel as ImpiantoAriaPanel } from './impianto-aria/panel'
+import { Toolbar as ImpiantoAriaToolbar } from './impianto-aria/toolbar'
+import { Panel as RobotPanel } from './robot/panel'
+import { Toolbar as RobotToolbar } from './robot/toolbar'
+import { Panel as ToolStandPanel } from './tool-stand/panel'
+import { Toolbar as ToolStandToolbar } from './tool-stand/toolbar'
+import { Panel as ToolStandGripperPiccoloPanel } from './tool-stand-gripper-piccolo/panel'
+import { Toolbar as ToolStandGripperPiccoloToolbar } from './tool-stand-gripper-piccolo/toolbar'
+import { Panel as ToolStandGripperMedioPanel } from './tool-stand-gripper-medio/panel'
+import { Toolbar as ToolStandGripperMedioToolbar } from './tool-stand-gripper-medio/toolbar'
+import { Panel as ToolStandGripperGrandePanel } from './tool-stand-gripper-grande/panel'
+import { Toolbar as ToolStandGripperGrandeToolbar } from './tool-stand-gripper-grande/toolbar'
+import { Panel as ToolStandGripperDistanzialiPanel } from './tool-stand-gripper-distanziali/panel'
+import { Toolbar as ToolStandGripperDistanzialiToolbar } from './tool-stand-gripper-distanziali/toolbar'
 import type { DeviceMeta } from '@/types'
 
 export interface RegisteredDevice {
   meta: DeviceMeta
   Panel: React.ComponentType<{ label: string }>
   Toolbar: React.ComponentType
+  /**
+   * Optional inline element rendered in the right-panel header next to
+   * the status badge. For ambient session metadata a device wants
+   * always visible without taking a row inside the panel body — e.g.
+   * Speed's live clock.
+   */
+  HeaderExtra?: React.ComponentType
 }
 
 const stubDevice: RegisteredDevice = {
@@ -123,50 +176,155 @@ const registry: Record<string, RegisteredDevice> = {
   },
 
   // Robot, Dispenser (root)
-  robot:                         entry(robotMeta.meta),
-  'dispenser-distanziali':       entry(dispenserMeta.meta),
+  robot: {
+    meta: robotMeta.meta,
+    Panel: RobotPanel as React.ComponentType<{ label: string }>,
+    Toolbar: RobotToolbar,
+  },
+  'dispenser-distanziali': {
+    meta: dispenserMeta.meta,
+    Panel: DispenserDistanzialiPanel as React.ComponentType<{ label: string }>,
+    Toolbar: DispenserDistanzialiToolbar,
+  },
 
   // Tool stand → 4 gripper presets
-  'tool-stand':                          entry(toolStandMeta.meta),
-  'tool-stand-gripper-piccolo':          entry(toolStandGripperPiccoloMeta.meta),
-  'tool-stand-gripper-medio':            entry(toolStandGripperMedioMeta.meta),
-  'tool-stand-gripper-grande':           entry(toolStandGripperGrandeMeta.meta),
-  'tool-stand-gripper-distanziali':      entry(toolStandGripperDistanzialiMeta.meta),
+  'tool-stand': {
+    meta: toolStandMeta.meta,
+    Panel: ToolStandPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandToolbar,
+  },
+  'tool-stand-gripper-piccolo': {
+    meta: toolStandGripperPiccoloMeta.meta,
+    Panel: ToolStandGripperPiccoloPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandGripperPiccoloToolbar,
+  },
+  'tool-stand-gripper-medio': {
+    meta: toolStandGripperMedioMeta.meta,
+    Panel: ToolStandGripperMedioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandGripperMedioToolbar,
+  },
+  'tool-stand-gripper-grande': {
+    meta: toolStandGripperGrandeMeta.meta,
+    Panel: ToolStandGripperGrandePanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandGripperGrandeToolbar,
+  },
+  'tool-stand-gripper-distanziali': {
+    meta: toolStandGripperDistanzialiMeta.meta,
+    Panel: ToolStandGripperDistanzialiPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ToolStandGripperDistanzialiToolbar,
+  },
 
   // Sistema di erogazione resina → serbatoio / erogatore / alimentatore inserti
-  'erogazione-resina':                       entry(resinaMeta.meta),
-  'erogazione-resina-serbatoio':             entry(resinaSerbatoioMeta.meta),
-  'erogazione-resina-erogatore':             entry(resinaErogatoreMeta.meta),
-  'erogazione-resina-alimentatore-inserti':  entry(resinaAlimentatoreMeta.meta),
+  'erogazione-resina': {
+    meta: resinaMeta.meta,
+    Panel: ErogazioneResinaPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'erogazione-resina-serbatoio': {
+    meta: resinaSerbatoioMeta.meta,
+    Panel: ErogazioneResinaSerbatoioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ErogazioneResinaSerbatoioToolbar,
+  },
+  'erogazione-resina-erogatore': {
+    meta: resinaErogatoreMeta.meta,
+    Panel: ErogazioneResinaErogatorePanel as React.ComponentType<{ label: string }>,
+    Toolbar: ErogazioneResinaErogatoreToolbar,
+  },
+  'erogazione-resina-alimentatore-inserti': {
+    meta: resinaAlimentatoreMeta.meta,
+    Panel: ErogazioneResinaAlimentatoreInsertiPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ErogazioneResinaAlimentatoreInsertiToolbar,
+  },
 
   // Baie → grezzi (vassoio, fotocellule, tastatore) / lavorati (vassoio)
   baie:                          entry(baieMeta.meta),
-  'baia-grezzi':                 entry(baiaGrezziMeta.meta),
-  'baia-grezzi-vassoio':         entry(baiaGrezziVassoioMeta.meta),
-  'baia-grezzi-fotocellule':     entry(baiaGrezziFotocelluleMeta.meta),
-  'baia-grezzi-tastatore':       entry(baiaGrezziTastatoreMeta.meta),
-  'baia-lavorati':               entry(baiaLavoratiMeta.meta),
-  'baia-lavorati-vassoio':       entry(baiaLavoratiVassoioMeta.meta),
+  'baia-grezzi': {
+    meta: baiaGrezziMeta.meta,
+    Panel: BaiaGrezziPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'baia-grezzi-vassoio': {
+    meta: baiaGrezziVassoioMeta.meta,
+    Panel: BaiaGrezziVassoioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'baia-grezzi-fotocellule': {
+    meta: baiaGrezziFotocelluleMeta.meta,
+    Panel: BaiaGrezziFotocellulePanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'baia-grezzi-tastatore': {
+    meta: baiaGrezziTastatoreMeta.meta,
+    Panel: BaiaGrezziTastatorePanel as React.ComponentType<{ label: string }>,
+    Toolbar: BaiaGrezziTastatoreToolbar,
+  },
+  'baia-lavorati': {
+    meta: baiaLavoratiMeta.meta,
+    Panel: BaiaLavoratiPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
+  'baia-lavorati-vassoio': {
+    meta: baiaLavoratiVassoioMeta.meta,
+    Panel: BaiaLavoratiVassoioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
 
   // Piani aspirati → piano 1 / piano 2
   'piani-aspirati':              entry(pianiAspiratiMeta.meta),
-  'piano-aspirato-1':            entry(piano1Meta.meta),
-  'piano-aspirato-2':            entry(piano2Meta.meta),
+  'piano-aspirato-1': {
+    meta: piano1Meta.meta,
+    Panel: PianoAspirato1Panel as React.ComponentType<{ label: string }>,
+    Toolbar: PianoAspirato1Toolbar,
+  },
+  'piano-aspirato-2': {
+    meta: piano2Meta.meta,
+    Panel: PianoAspirato2Panel as React.ComponentType<{ label: string }>,
+    Toolbar: PianoAspirato2Toolbar,
+  },
 
   // Speed → soffiatore / barra di lavaggio
-  speed:                         entry(speedMeta.meta),
-  'speed-soffiatore':            entry(speedSoffiatoreMeta.meta),
-  'speed-barra-lavaggio':        entry(speedBarraMeta.meta),
+  speed: {
+    meta: speedMeta.meta,
+    Panel: SpeedPanel as React.ComponentType<{ label: string }>,
+    Toolbar: SpeedToolbar,
+    HeaderExtra: SpeedHeaderExtra,
+  },
+  'speed-soffiatore': {
+    meta: speedSoffiatoreMeta.meta,
+    Panel: SpeedSoffiatorePanel as React.ComponentType<{ label: string }>,
+    Toolbar: SpeedSoffiatoreToolbar,
+  },
+  'speed-barra-lavaggio': {
+    meta: speedBarraMeta.meta,
+    Panel: SpeedBarraLavaggioPanel as React.ComponentType<{ label: string }>,
+    Toolbar: SpeedBarraLavaggioToolbar,
+  },
 
   // Impianti → vuoto / acqua / aria
   impianti:                      entry(impiantiMeta.meta),
-  'impianto-vuoto':              entry(vuotoMeta.meta),
-  'impianto-acqua':              entry(acquaMeta.meta),
-  'impianto-aria':               entry(ariaMeta.meta),
+  'impianto-vuoto': {
+    meta: vuotoMeta.meta,
+    Panel: ImpiantoVuotoPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ImpiantoVuotoToolbar,
+  },
+  'impianto-acqua': {
+    meta: acquaMeta.meta,
+    Panel: ImpiantoAcquaPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ImpiantoAcquaToolbar,
+  },
+  'impianto-aria': {
+    meta: ariaMeta.meta,
+    Panel: ImpiantoAriaPanel as React.ComponentType<{ label: string }>,
+    Toolbar: ImpiantoAriaToolbar,
+  },
 
   // Sicurezza → elettroserrature
   sicurezza:                     entry(sicurezzaMeta.meta),
-  'sicurezza-elettroserrature':  entry(elettroserratureMeta.meta),
+  'sicurezza-elettroserrature': {
+    meta: elettroserratureMeta.meta,
+    Panel: SicurezzaElettroserraturePanel as React.ComponentType<{ label: string }>,
+    Toolbar: StubToolbar,
+  },
 }
 
 export function getDevice(id: string): RegisteredDevice {
