@@ -1,5 +1,7 @@
 import { useDeviceState } from '@/hooks/use-device-state'
 import { useSelectedDevice } from '@/hooks/use-selected-device'
+import LastraIcon from '@/icons/lastra.svg?react'
+import SelectCircleAreaIcon from '@/icons/select-circle-area.svg?react'
 import type { PortaleTesta1State } from '@/devices/portale-testa-1/state'
 
 interface ChipProps {
@@ -7,15 +9,36 @@ interface ChipProps {
   primary: string
   deviceId?: string
   secondaryItems?: string[]
+  showDivider?: boolean
 }
 
-function Chip({ label, primary, deviceId, secondaryItems = [] }: ChipProps) {
+function Chip({
+  label,
+  primary,
+  deviceId,
+  secondaryItems = [],
+  showDivider = true,
+}: ChipProps) {
   const { select } = useSelectedDevice()
   const tags = secondaryItems.filter((s) => !s.startsWith('Visualizza'))
   const interactive = !!deviceId
+  const badgeLabel = (tag: string) => {
+    if (tag.startsWith('Lastra ')) return tag.replace('Lastra ', '')
+    if (tag.startsWith('Foro ')) return tag.replace('Foro ', '')
+    return tag
+  }
+  const badgeIcon = (tag: string) => {
+    if (tag.startsWith('Lastra') || tag.startsWith('L-')) {
+      return <LastraIcon className="h-3.5 w-3.5 shrink-0 text-[var(--icon-default-disabled)]" />
+    }
+    if (tag.startsWith('Foro') || tag.startsWith('F-')) {
+      return <SelectCircleAreaIcon className="h-3 w-3 shrink-0 text-[var(--icon-default-disabled)]" />
+    }
+    return null
+  }
 
   const content = (
-    <>
+    <div className="flex h-full min-w-0 flex-col gap-3 rounded-[var(--radius-md)] px-4 py-4 transition-colors group-hover:bg-white/[0.06]">
       <div className="flex flex-col gap-1">
         <span className="text-xs font-medium text-[var(--text-muted)]">
           {label}
@@ -29,27 +52,35 @@ function Chip({ label, primary, deviceId, secondaryItems = [] }: ChipProps) {
           {tags.map((s) => (
             <span
               key={s}
-              className="rounded-sm bg-[var(--bg-muted)] px-2 py-0.5 text-xs font-medium tracking-wide text-[var(--text-subtle)]"
+              className="inline-flex items-center gap-1 rounded-sm bg-[var(--bg-muted)] px-2 py-0.5 text-xs font-normal tracking-wide text-[var(--text-subtle)]"
             >
-              {s}
+              {badgeIcon(s)}
+              {badgeLabel(s)}
             </span>
           ))}
         </div>
       )}
-    </>
+    </div>
   )
 
-  const baseClass =
-    'flex min-w-[260px] flex-col gap-3 border-r border-[var(--border-mute)] px-6 py-5 text-left'
+  const baseClass = 'group min-w-0 p-2 text-left'
+  const style = showDivider
+    ? { borderRight: '0.5px solid var(--border-mute)' }
+    : undefined
 
   if (!interactive) {
-    return <div className={baseClass}>{content}</div>
+    return (
+      <div className={baseClass} style={style}>
+        {content}
+      </div>
+    )
   }
   return (
     <button
       type="button"
       onClick={() => select(deviceId)}
-      className={`${baseClass} transition-colors hover:bg-[var(--bg-muted)]`}
+      className={baseClass}
+      style={style}
     >
       {content}
     </button>
@@ -69,7 +100,7 @@ export function TopBar() {
   ]
 
   return (
-    <div className="flex h-full items-stretch">
+    <div className="grid h-full grid-cols-[1.18fr_repeat(4,1fr)] items-stretch">
       <Chip
         label="Ricetta"
         primary="Lastra 1500x450x6 Gress Rosso"
@@ -98,6 +129,7 @@ export function TopBar() {
         primary="L1 - Foratura"
         deviceId="speed"
         secondaryItems={['Lastra 1', 'Foro 2']}
+        showDivider={false}
       />
     </div>
   )

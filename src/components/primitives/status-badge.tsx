@@ -9,9 +9,9 @@ const styles: Record<DeviceStatus, { bg: string; dot: string; text: string }> = 
     text: 'text-[var(--text-success)]',
   },
   idle: {
-    bg: 'bg-[var(--bg-muted)]',
+    bg: 'bg-[var(--bg-badge-gray)]',
     dot: 'bg-[var(--status-idle)]',
-    text: 'text-[var(--text-muted)]',
+    text: 'text-[var(--bg-basic-gray-strong)]',
   },
   warning: {
     bg: 'bg-[var(--bg-muted)]',

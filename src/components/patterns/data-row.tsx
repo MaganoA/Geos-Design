@@ -9,7 +9,7 @@ import { Text } from '@/components/primitives/text'
 export function DataRow({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <Text variant="sm/normal" className="text-[var(--text-muted)]">
+      <Text variant="sm/normal" className="text-[var(--text-subtle)]">
         {label}
       </Text>
       <Text

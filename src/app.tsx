@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import LogoApp from '@/icons/logo-app.svg?react'
-import Sidebar from '@/icons/sidebar.svg?react'
-import { TopBar } from './shell/top-bar'
+import AlignLeftSquare from '@/icons/align-left-square.svg?react'
 import { LeftPanel } from './shell/left-panel'
 import { RightPanel } from './shell/right-panel'
 import { BottomToolbar } from './shell/bottom-toolbar'
+import { TopBar } from './shell/top-bar'
 import { Avatar } from './components/primitives/avatar'
 import { TopBarVariantA } from './preview/topbar-a'
 import { TopBarVariantB } from './preview/topbar-b'
@@ -14,6 +14,7 @@ import { ToolbarVariants } from './preview/toolbar-variants'
 import { VelocitaVariants } from './preview/velocita-variants'
 import { Viewport } from './viewport/canvas'
 import { useSelectedDevice } from './hooks/use-selected-device'
+import { useMachineStore } from './store/machine-store'
 import { useRegisterPortaleTesta1 } from './devices/portale-testa-1/register'
 import { useRegisterPortaleTesta1Tenuta } from './devices/portale-testa-1-tenuta/register'
 import { useRegisterPortaleTesta1Erogatore } from './devices/portale-testa-1-erogatore/register'
@@ -47,38 +48,22 @@ import { useRegisterErogazioneResinaSerbatoio } from './devices/erogazione-resin
 import { useRegisterErogazioneResinaErogatore } from './devices/erogazione-resina-erogatore/register'
 import { useRegisterErogazioneResinaAlimentatoreInserti } from './devices/erogazione-resina-alimentatore-inserti/register'
 
-const TOP_BAR_HEIGHT = 140
-const RIGHT_PANEL_WIDTH = 368
-// Width of the left rail column. Mirrors gridTemplateColumns below.
 const RAIL_WIDTH = 52
-// Floating LeftPanel width (matches the card in shell/left-panel.tsx) plus
-// the 16 px inset-4 it sits at. The bottom dock skips over this band so it
-// centres in the *visible* 3D area between the tree card and the right
-// panel, instead of geometrically across the whole grid cell (which would
-// hide its left edge behind the tree).
+const PANEL_GAP = 16
 const LEFT_PANEL_WIDTH = 348
-const LEFT_PANEL_INSET = 16
-
-// Motion choreography for the TopBar collapse/expand. Asymmetric on
-// purpose: opening is gentler (the user is about to read), closing is
-// snappier (system response). The container moves on the iOS drawer
-// curve; content uses ease-out-expo with a slight delay on open so the
-// card body reveals *after* the row has begun expanding.
-const TRANSITION_OPEN = {
-  gridRows: 'grid-template-rows 320ms cubic-bezier(0.32, 0.72, 0, 1)',
-  cellPadding: 'padding 320ms cubic-bezier(0.32, 0.72, 0, 1)',
-  cardOpacity: 'opacity 220ms 80ms cubic-bezier(0.16, 1, 0.3, 1)',
-  cardTransform: 'transform 280ms 60ms cubic-bezier(0.16, 1, 0.3, 1)',
-}
-const TRANSITION_CLOSE = {
-  gridRows: 'grid-template-rows 200ms cubic-bezier(0.32, 0.72, 0, 1)',
-  cellPadding: 'padding 200ms cubic-bezier(0.32, 0.72, 0, 1)',
-  cardOpacity: 'opacity 140ms cubic-bezier(0.16, 1, 0.3, 1)',
-  cardTransform: 'transform 180ms cubic-bezier(0.16, 1, 0.3, 1)',
-}
+const TOP_BAR_TOP = 16
+const TOP_BAR_HEIGHT = 124
+const TOP_BAR_BOTTOM = TOP_BAR_TOP + TOP_BAR_HEIGHT
 
 export default function App() {
-  const [topBarCollapsed, setTopBarCollapsed] = useState(false)
+  const initialTheme =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('theme') === 'dark'
+        ? 'dark'
+        : 'light'
+      : 'light'
+  const [theme] = useState<'light' | 'dark'>(initialTheme)
+  const [topBarVisible, setTopBarVisible] = useState(false)
 
   // Seed live device state and subscribe to the 100 ms tick. Hooks must
   // run unconditionally before any early return (the preview routing
@@ -116,10 +101,23 @@ export default function App() {
   useRegisterErogazioneResinaErogatore()
   useRegisterErogazioneResinaAlimentatoreInserti()
 
-  // Right column collapses to 0 when there's nothing to show. Col 2 (1fr)
-  // absorbs the freed width, so the 3D Canvas grows into it. The whole
-  // shell animates as a unit via grid-template-columns.
-  const { device } = useSelectedDevice()
+  const { id, device, select } = useSelectedDevice()
+  useEffect(() => {
+    if (!id) select('tool-stand-gripper-piccolo')
+  }, [id, select])
+  useEffect(() => {
+    const store = useMachineStore.getState()
+    store.patchDevice('tool-stand', {
+      status: 'active',
+      gripperMontato: 'piccolo',
+    })
+    store.patchDevice('tool-stand-gripper-piccolo', {
+      status: 'idle',
+      stato: 'niente',
+      dx: 60,
+      dy: 60,
+    })
+  }, [])
 
   if (typeof window !== 'undefined') {
     const preview = new URLSearchParams(window.location.search).get('preview')
@@ -131,73 +129,80 @@ export default function App() {
     if (preview === 'velocita-variants') return <VelocitaVariants />
   }
 
-  const t = topBarCollapsed ? TRANSITION_CLOSE : TRANSITION_OPEN
-  const rightColVisible = !!device && device.meta.hasData !== false
+  const rightPanelVisible = !!device && device.meta.hasData !== false
+  const toolbarVisible = !!device && device.meta.hasCommands !== false
 
   return (
     <div
-      className="grid h-dvh w-dvw bg-[var(--bg-muted)]"
-      style={{
-        gridTemplateColumns: `52px 1fr ${rightColVisible ? RIGHT_PANEL_WIDTH : 0}px`,
-        gridTemplateRows: `${topBarCollapsed ? 0 : TOP_BAR_HEIGHT}px 1fr`,
-        transition: `${t.gridRows}, grid-template-columns 320ms cubic-bezier(0.32, 0.72, 0, 1)`,
-        gridTemplateAreas: `
-          "rail top    top"
-          "rail left   right"
-        `,
-      }}
+      data-theme={theme}
+      className={[
+        'relative h-dvh w-dvw overflow-hidden bg-[var(--bg-global)] text-[var(--text-default)]',
+        theme === 'dark' ? 'dark' : '',
+      ].join(' ')}
     >
-      <aside style={{ gridArea: 'rail' }} className="bg-transparent">
+      <aside className="pointer-events-auto absolute inset-y-0 left-0 z-50 w-[52px] bg-transparent">
         <Rail
-          collapsed={topBarCollapsed}
-          onToggle={() => setTopBarCollapsed((c) => !c)}
+          topBarVisible={topBarVisible}
+          onToggleTopBar={() => setTopBarVisible((visible) => !visible)}
         />
       </aside>
-      <header
-        style={{
-          gridArea: 'top',
-          padding: topBarCollapsed ? 0 : '16px 16px 0 16px',
-          transition: t.cellPadding,
-        }}
-      >
-        <div
-          className="h-full overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
+
+      <section className="absolute inset-y-0 right-0 left-[52px]">
+        <Viewport />
+        <aside
+          className="pointer-events-auto absolute bottom-4 left-0 z-10"
           style={{
-            boxShadow: 'var(--shadow-base)',
-            opacity: topBarCollapsed ? 0 : 1,
-            transform: topBarCollapsed ? 'translateY(-8px)' : 'translateY(0)',
-            transition: `${t.cardOpacity}, ${t.cardTransform}`,
-            willChange: 'transform, opacity',
+            top: topBarVisible ? TOP_BAR_BOTTOM + PANEL_GAP : 17,
+            transition: 'top 280ms var(--ease-camera)',
           }}
         >
-          <TopBar />
-        </div>
-      </header>
-      {/* Viewport section spans just col 2 of the main row (full lower
-          height — no bottom-toolbar row pushing it up). The Canvas
-          physically sits in this cell only; LeftPanel + BottomToolbar
-          float over it as absolute cards, never carving space out of
-          the 3D area. */}
-      <section style={{ gridArea: 'left' }} className="relative">
-        <Viewport />
-        <aside className="pointer-events-auto absolute top-4 bottom-4 left-4 z-10">
           <LeftPanel />
         </aside>
       </section>
-      <aside style={{ gridArea: 'right' }} className="bg-transparent">
+
+      <header
+        className="absolute right-4 z-20 overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
+        style={{
+          border: '0.5px solid var(--border-mute)',
+          top: TOP_BAR_TOP,
+          left: RAIL_WIDTH,
+          height: TOP_BAR_HEIGHT,
+          boxShadow: '0 1px 2px -1px rgb(0 0 0 / 0.45), 0 1px 3px 0 rgb(0 0 0 / 0.35)',
+          opacity: topBarVisible ? 1 : 0,
+          transform: topBarVisible ? 'translateY(0)' : 'translateY(-8px)',
+          pointerEvents: topBarVisible ? 'auto' : 'none',
+          transition:
+            'opacity 200ms var(--ease-out), transform 240ms var(--ease-out)',
+        }}
+      >
+        <TopBar />
+      </header>
+
+      <aside
+        className="pointer-events-auto absolute right-4 z-20 w-[352px]"
+        style={{
+          top: topBarVisible ? TOP_BAR_BOTTOM + PANEL_GAP : 22,
+          opacity: rightPanelVisible ? 1 : 0,
+          transform: rightPanelVisible ? 'translateX(0)' : 'translateX(8px)',
+          transition:
+            'top 280ms var(--ease-camera), opacity 200ms var(--ease-out), transform 240ms var(--ease-out)',
+          pointerEvents: rightPanelVisible ? 'auto' : 'none',
+        }}
+      >
         <RightPanel />
       </aside>
-      {/* Bottom toolbar — centred inside the *visible* 3D container,
-        i.e. the band between the floating LeftPanel's right edge and
-        the RightPanel (or the viewport edge when the right column is
-        collapsed). The right offset animates with the right column so
-        the toolbar slides into its new centre as the panel reveals. */}
+
       <div
-        className="pointer-events-none fixed bottom-0 z-20 flex justify-center pb-4"
+        className="pointer-events-none fixed bottom-0 z-30 -translate-x-1/2 pb-4"
         style={{
-          left: RAIL_WIDTH + LEFT_PANEL_INSET + LEFT_PANEL_WIDTH,
-          right: rightColVisible ? RIGHT_PANEL_WIDTH : 0,
-          transition: 'right 320ms cubic-bezier(0.32, 0.72, 0, 1)',
+          left: `calc(${RAIL_WIDTH + LEFT_PANEL_WIDTH + PANEL_GAP}px + (100vw - ${RAIL_WIDTH + LEFT_PANEL_WIDTH + PANEL_GAP}px) / 2)`,
+          opacity: toolbarVisible ? 1 : 0,
+          transform: toolbarVisible
+            ? 'translateX(-50%) translateY(0)'
+            : 'translateX(-50%) translateY(8px)',
+          transition:
+            'opacity 220ms var(--ease-out), transform 260ms var(--ease-out)',
+          pointerEvents: toolbarVisible ? 'auto' : 'none',
         }}
       >
         <div className="pointer-events-auto">
@@ -208,32 +213,38 @@ export default function App() {
   )
 }
 
-function Rail({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+function Rail({
+  topBarVisible,
+  onToggleTopBar,
+}: {
+  topBarVisible: boolean
+  onToggleTopBar: () => void
+}) {
   return (
     <div className="flex h-full flex-col items-center py-4">
-      <div className="grid h-11 w-11 place-items-center rounded-md text-[var(--icon-default)]">
+      <div className="grid h-10 w-10 place-items-center rounded-[var(--radius-md)] bg-[var(--bg-state-secondary)] text-[var(--icon-default)]">
         <LogoApp className="h-6 w-6" />
       </div>
       <div className="flex-1" />
       <div className="flex flex-col items-center gap-1">
         <button
           type="button"
-          onClick={onToggle}
-          aria-label={collapsed ? 'Mostra pannello superiore' : 'Nascondi pannello superiore'}
-          aria-pressed={!collapsed}
-          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] transition-transform duration-150 ease-out hover:bg-[var(--border-mute)] hover:text-[var(--icon-default)] active:scale-[0.96]"
+          onClick={onToggleTopBar}
+          aria-label={topBarVisible ? 'Nascondi barra lavorazioni' : 'Mostra barra lavorazioni'}
+          aria-pressed={topBarVisible}
+          className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] text-[var(--icon-default-muted)] transition-transform duration-150 ease-out hover:bg-[var(--bg-state-soft)] hover:text-[var(--icon-default)] active:scale-[0.96]"
         >
-          <Sidebar
-            className="h-5 w-5"
+          <AlignLeftSquare
+            className="h-3.5 w-3.5"
             style={{
-              transform: collapsed ? 'rotate(270deg)' : 'rotate(90deg)',
+              transform: topBarVisible ? 'rotate(270deg)' : 'rotate(90deg)',
               transition: 'transform 280ms cubic-bezier(0.32, 0.72, 0, 1)',
             }}
           />
         </button>
         <button
           type="button"
-          className="grid h-11 w-11 place-items-center rounded-full text-[var(--icon-default-muted)] transition-transform duration-150 ease-out hover:bg-[var(--border-mute)] active:scale-[0.96]"
+          className="grid h-7 w-7 place-items-center rounded-full text-[var(--icon-default-muted)] transition-transform duration-150 ease-out hover:bg-[var(--bg-state-soft)] active:scale-[0.96]"
           aria-label="Account"
         >
           <Avatar

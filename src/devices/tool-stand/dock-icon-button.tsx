@@ -30,12 +30,12 @@ export function DockIconButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'flex h-[52px] min-w-[110px] flex-col items-center justify-center gap-1 rounded-[var(--radius-md)] px-3',
+        'flex h-[66px] min-w-[110px] flex-col items-center justify-center gap-2 rounded-[var(--radius-md)] px-4 py-3',
         className,
       )}
     >
       <span className="text-[var(--icon-default)]">{icon}</span>
-      <span className="text-[10px] font-medium uppercase tracking-wider text-[var(--text-muted)]">
+      <span className="text-xs font-normal leading-4 tracking-normal text-[var(--text-default)]">
         {label}
       </span>
     </Button>

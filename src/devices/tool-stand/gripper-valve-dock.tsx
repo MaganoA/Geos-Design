@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useDeviceState } from '@/hooks/use-device-state'
+import CogMachineIcon from '@/icons/cog-machine.svg?react'
+import DashboardCircleIcon from '@/icons/dashboard-circle.svg?react'
 import { useModeStore } from '@/store/mode-store'
 import { useRoleStore } from '@/store/role-store'
 import { DockIconButton } from './dock-icon-button'
@@ -47,23 +49,23 @@ export function GripperValveDock({ kind }: Props) {
 
   return (
     <>
-      <div className="flex h-full items-center gap-3">
-        <div className="flex items-center gap-2">
+      <div className="flex h-full items-center gap-4">
+        <div className="flex items-center gap-1">
           <DockIconButton
             label="Setup Gripper"
-            icon={<SlidersIcon />}
+            icon={<CogMachineIcon className="h-5 w-5" />}
             onClick={() => setSetupOpen(true)}
             disabled={setupDisabled}
           />
           <DockIconButton
             label="Modifica Valvole"
-            icon={<GridIcon />}
+            icon={<DashboardCircleIcon className="h-5 w-5" />}
             onClick={() => setValvoleOpen(true)}
             disabled={valvoleDisabled}
           />
         </div>
 
-        <div className="h-10 w-px bg-[var(--border-mute)]" aria-hidden />
+        <div className="h-[66px] w-px bg-[var(--border-mute)]" aria-hidden />
 
         <GripperStatoSegmented kind={kind} />
       </div>
@@ -79,31 +81,5 @@ export function GripperValveDock({ kind }: Props) {
         onOpenChange={setValvoleOpen}
       />
     </>
-  )
-}
-
-function SlidersIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path
-        d="M3 5h7M13 5h2M3 13h2M8 13h7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <circle cx="11.5" cy="5" r="1.7" fill="currentColor" />
-      <circle cx="6.5" cy="13" r="1.7" fill="currentColor" />
-    </svg>
-  )
-}
-
-function GridIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <rect x="3" y="3" width="5" height="5" rx="1" fill="currentColor" />
-      <rect x="10" y="3" width="5" height="5" rx="1" fill="currentColor" />
-      <rect x="3" y="10" width="5" height="5" rx="1" fill="currentColor" />
-      <rect x="10" y="10" width="5" height="5" rx="1" fill="currentColor" />
-    </svg>
   )
 }

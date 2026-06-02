@@ -1,22 +1,7 @@
-import { useEffect, useState } from 'react'
 import { useSelectedDevice } from '@/hooks/use-selected-device'
 
 export function BottomToolbar() {
   const { device } = useSelectedDevice()
-  const visible = !!device && device.meta.hasCommands !== false
-
-  // Mount the card, then fade + lift it into place. The slight upward
-  // translation makes the toolbar feel like it's resting on the
-  // viewport floor instead of popping in over it.
-  const [shown, setShown] = useState(false)
-  useEffect(() => {
-    if (!visible) {
-      setShown(false)
-      return
-    }
-    const id = window.setTimeout(() => setShown(true), 60)
-    return () => window.clearTimeout(id)
-  }, [visible, device?.meta.id])
 
   if (!device || device.meta.hasCommands === false) return null
 
@@ -27,14 +12,10 @@ export function BottomToolbar() {
     // padding the toolbar shipped with read as "off centre" because
     // the buttons drifted horizontally more than they did vertically.
     <div
-      className="flex items-center rounded-[var(--radius-xl)] bg-[var(--bg-default)] p-2"
+      className="flex items-center rounded-[var(--radius-lg)] bg-[var(--bg-default)] p-1 dark:p-2"
       style={{
-        boxShadow: 'var(--shadow-demo)',
-        opacity: shown ? 1 : 0,
-        transform: shown ? 'translateY(0)' : 'translateY(8px)',
-        transition:
-          'opacity 220ms cubic-bezier(0.16, 1, 0.3, 1), transform 260ms cubic-bezier(0.16, 1, 0.3, 1)',
-        willChange: 'opacity, transform',
+        border: '0.5px solid var(--border-mute)',
+        boxShadow: '0 10px 24px -16px rgb(0 0 0 / 0.80)',
       }}
     >
       <Toolbar />

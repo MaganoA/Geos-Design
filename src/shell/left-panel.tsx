@@ -12,23 +12,23 @@ export function LeftPanel() {
     <div
       className="flex max-h-full max-w-[348px] flex-col overflow-hidden rounded-[var(--radius-xl)] bg-[var(--bg-default)]"
       style={{
-        boxShadow: 'var(--shadow-base)',
+        border: '0.5px solid var(--border-mute)',
+        boxShadow: '0 1px 2px -1px rgb(0 0 0 / 0.45), 0 1px 3px 0 rgb(0 0 0 / 0.35)',
         width: 348,
       }}
     >
-      <header className="flex flex-shrink-0 flex-col gap-3 px-6 pt-6 pb-5">
+      <header className="flex flex-shrink-0 flex-col gap-2 px-6 pt-6 pb-5">
         <button type="button" className="flex items-center gap-2 text-left">
           <span
-            className="text-3xl font-medium leading-9 text-[var(--text-default)]"
-            style={{ letterSpacing: 'var(--tracking-display)' }}
+            className="text-2xl font-medium leading-8 text-[var(--text-default)]"
+            style={{ letterSpacing: 'var(--tracking-normal)' }}
           >
             FlexPin
           </span>
           <CaretDown className="h-5 w-5 text-[var(--icon-default-subtle)]" />
         </button>
-        <Badge className="self-start bg-[var(--bg-badge-green)] text-[var(--text-success)] hover:bg-[var(--bg-badge-green)]">
-          <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-[var(--status-active)]" />
-          Attivo
+        <Badge className="self-start bg-[var(--bg-basic-cyan-subtle)] px-[9px] py-[3px] text-xs leading-4 text-[var(--bg-basic-cyan-strong)] hover:bg-[var(--bg-basic-cyan-subtle)]">
+          Automatico
         </Badge>
       </header>
       {/*
@@ -38,7 +38,7 @@ export function LeftPanel() {
         inside scrolls. type="scroll" keeps the scrollbar hidden except while
         the user is actively scrolling.
       */}
-      <ScrollArea type="scroll" className="min-h-0">
+      <ScrollArea type="scroll" className="min-h-0 flex-1 overflow-hidden">
         <div className="px-3 pb-5">
           <DeviceTree />
         </div>

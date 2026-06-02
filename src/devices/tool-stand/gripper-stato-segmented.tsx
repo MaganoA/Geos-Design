@@ -1,4 +1,12 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import ChevronUpIcon from '@/icons/figma-chevron-up.svg?react'
+import WindFlowIcon from '@/icons/wind-flow.svg?react'
 import { useMachineStore } from '@/store/machine-store'
 import { useModeStore } from '@/store/mode-store'
 import { useRoleStore } from '@/store/role-store'
@@ -9,9 +17,9 @@ type OperatingStato = 'vuoto' | 'soffio' | 'niente'
 
 const ORDER: OperatingStato[] = ['vuoto', 'soffio', 'niente']
 const LABEL: Record<OperatingStato, string> = {
-  vuoto: 'Aspirazione',
+  vuoto: 'Aspirato',
   soffio: 'Soffio',
-  niente: 'Nessuno',
+  niente: 'Niente',
 }
 
 interface Props {
@@ -19,18 +27,9 @@ interface Props {
 }
 
 /**
- * Three-way segmented control for the gripper's operating mode while
- * mounted. Built on the shadcn Tabs primitive (no content panels — we
- * only use the trigger row as a single-select segmented).
- *
- * Same visual language as the tenuta segmented in the bottom dock:
- * emerald LED dot + normal-case label, so the two surfaces read as
- * the same primitive across the HMI.
- *
- * Hidden when the gripper is in magazzino — switching mode on an
- * unmounted gripper makes no sense and surfacing the control would
- * just confuse the operator. Role / mode gating mirrors the
- * preleva-/posa- commands: disabled unless operatore + manuale.
+ * Dock dropdown for the gripper operating mode. The trigger displays
+ * the current action and an ON indicator; the menu owns the mutually
+ * exclusive choices: Soffio, Aspirato, Niente.
  */
 export function GripperStatoSegmented({ kind }: Props) {
   const deviceId = GRIPPER_DEVICE_ID[kind]
@@ -45,44 +44,56 @@ export function GripperStatoSegmented({ kind }: Props) {
   const stato = current.stato as OperatingStato
   const disabled = role === 'operatore' && mode !== 'manuale'
 
+  function setStato(next: string) {
+    if (disabled) return
+    const v = next as OperatingStato
+    if (v === stato) return
+    setDevice(deviceId, { ...current, stato: v })
+  }
+
+  const isOn = stato !== 'niente'
+
   return (
-    <Tabs
-      value={stato}
-      onValueChange={(next) => {
-        if (disabled) return
-        const v = next as OperatingStato
-        if (v === stato) return
-        setDevice(deviceId, { ...current, stato: v })
-      }}
-      className={cn(disabled && 'pointer-events-none opacity-50')}
-    >
-      <TabsList className="h-[52px] gap-1 rounded-[var(--radius-md)] p-1">
-        {ORDER.map((v) => {
-          const active = v === stato
-          return (
-            <TabsTrigger
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild disabled={disabled}>
+        <button
+          type="button"
+          className={cn(
+            'relative flex h-[66px] min-w-[132px] flex-col items-center justify-center gap-2 rounded-[var(--radius-md)] px-4 py-3 text-xs font-normal leading-4 tracking-normal text-[var(--text-default)] outline-none transition-colors hover:bg-[var(--bg-state-soft)] focus-visible:ring-2 focus-visible:ring-[var(--border-input-highlight)]',
+            disabled && 'pointer-events-none opacity-50',
+          )}
+        >
+          <WindFlowIcon className="h-5 w-5 shrink-0 text-[var(--icon-default)]" />
+          <span>Aspirazione</span>
+          <span
+            className={cn(
+              'absolute top-1.5 right-7 text-[10px] font-bold leading-4 tracking-[0.02em]',
+              isOn ? 'text-[var(--text-success)]' : 'text-[var(--text-muted)]',
+            )}
+          >
+            {isOn ? 'ON' : 'OFF'}
+          </span>
+          <ChevronUpIcon className="absolute right-3 bottom-5 h-2 w-3 rotate-180 text-[var(--icon-default)]" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        side="top"
+        sideOffset={8}
+        className="min-w-[150px] rounded-[var(--radius-md)] border-[var(--border-default)] bg-[var(--bg-modal)] p-1"
+      >
+        <DropdownMenuRadioGroup value={stato} onValueChange={setStato}>
+          {ORDER.map((v) => (
+            <DropdownMenuRadioItem
               key={v}
               value={v}
-              disabled={disabled}
-              className="min-w-[120px] gap-2 px-4 text-[14px] font-medium"
+              className="rounded-[var(--radius-sm)] py-2 text-sm text-[var(--text-default)] focus:bg-[var(--bg-state-soft)]"
             >
-              <span
-                aria-hidden
-                className={cn(
-                  'h-2 w-2 shrink-0 rounded-full transition-colors',
-                  active ? 'bg-emerald-400' : 'bg-stone-300',
-                )}
-                style={
-                  active
-                    ? { boxShadow: '0 0 6px rgb(74 222 128 / 0.65)' }
-                    : undefined
-                }
-              />
               {LABEL[v]}
-            </TabsTrigger>
-          )
-        })}
-      </TabsList>
-    </Tabs>
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

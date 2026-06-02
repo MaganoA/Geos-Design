@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useCommandDispatch } from '@/hooks/use-command-dispatch'
 import { useDeviceState } from '@/hooks/use-device-state'
+import ProductSelectionIcon from '@/icons/product-selection.svg?react'
 import { canRunCommand } from '@/lib/role-gate'
 import { commands as toolStandCommands } from './commands'
 import { DockIconButton } from './dock-icon-button'
@@ -62,7 +63,7 @@ export function GripperMountActions({ kind }: { kind: GripperKind }) {
     return (
       <DockIconButton
         label="Posa Gripper"
-        icon={<PosaIcon />}
+        icon={<ProductSelectionIcon className="h-5 w-5" />}
         onClick={() => void dispatch(posaCmd, TOOL_STAND_ID)}
         disabled={disabled}
       />
@@ -74,7 +75,7 @@ export function GripperMountActions({ kind }: { kind: GripperKind }) {
       <>
         <DockIconButton
           label="Preleva Gripper"
-          icon={<PrelevaIcon />}
+          icon={<ProductSelectionIcon className="h-5 w-5" />}
           onClick={() => setSwapOpen(true)}
           disabled={disabled}
         />
@@ -109,59 +110,9 @@ export function GripperMountActions({ kind }: { kind: GripperKind }) {
   return (
     <DockIconButton
       label="Preleva Gripper"
-      icon={<PrelevaIcon />}
+      icon={<ProductSelectionIcon className="h-5 w-5" />}
       onClick={() => void dispatch(prelevaCmd, TOOL_STAND_ID)}
       disabled={disabled}
     />
-  )
-}
-
-function PrelevaIcon() {
-  // Arrow leaving the tool stand up onto the robot head.
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path
-        d="M9 14 L9 4 M5 8 L9 4 L13 8"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <line
-        x1="3"
-        y1="15"
-        x2="15"
-        y2="15"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function PosaIcon() {
-  // Arrow leaving the robot head back down onto the tool stand.
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path
-        d="M9 4 L9 14 M5 10 L9 14 L13 10"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <line
-        x1="3"
-        y1="15"
-        x2="15"
-        y2="15"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </svg>
   )
 }

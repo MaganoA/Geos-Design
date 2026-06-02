@@ -57,13 +57,13 @@ export function TreeItem({
         if (!isCategory) onSelect()
       }}
       className={[
-        'flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition outline-none',
-        'focus-visible:ring-2 focus-visible:ring-[var(--stone-300)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--bg-default)]',
+        'flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-2 py-1.5 text-left text-[13px] leading-[18.57px] transition outline-none',
+        'focus-visible:ring-2 focus-visible:ring-[var(--border-input-highlight)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--bg-default)]',
         isCategory
-          ? 'font-medium text-[var(--text-default)] hover:bg-[var(--bg-muted)]'
+          ? 'font-medium text-[var(--text-default)] hover:bg-[var(--bg-state-soft)]'
           : selected
-            ? 'bg-[var(--bg-muted)] font-medium text-[var(--text-default)]'
-            : 'font-medium text-[var(--text-subtle)] hover:bg-[var(--bg-muted)]',
+            ? 'bg-[var(--bg-state-soft)] font-medium text-[var(--text-default)]'
+            : 'font-medium text-[var(--text-default)] hover:bg-[var(--bg-state-soft)]',
       ].join(' ')}
       style={{ paddingLeft: 8 + depth * 16 }}
     >

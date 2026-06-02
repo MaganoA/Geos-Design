@@ -3,6 +3,7 @@ import { DataSection } from '@/components/patterns/data-section'
 import { RangeBarRow } from '@/components/patterns/range-bar-row'
 import { AngleDial } from '@/components/primitives/angle-dial'
 import { useDeviceState } from '@/hooks/use-device-state'
+import PlugsIcon from '@/icons/plugs.svg?react'
 import { formatMm } from '@/lib/format'
 import type { SpeedState } from './state'
 
@@ -23,8 +24,7 @@ export function Panel() {
        * Utensile, rather than buried under a generic "Macchinario"
        * grouping. Section title carries the identifier; the
        * RangeBarRow drops its internal label to avoid duplication.
-       * Data/ora lives in the panel header now (HeaderExtra slot) so
-       * the body holds operational data only. */}
+       * The body holds operational data only. */}
       <DataSection title="Velocità relazionale">
         <RangeBarRow
           ariaLabel="Velocità relazionale"
@@ -49,12 +49,24 @@ export function Panel() {
       </DataSection>
 
       <DataSection title="Utensile">
-        <DataRow label="Utensile connesso" value={s.utensileConnesso} />
+        <DataRow
+          label="Utensile connesso"
+          value={<ToolBadge value={s.utensileConnesso} />}
+        />
         <DataRow
           label="Ultimo disponibile"
-          value={s.ultimoUtensileDisponibile}
+          value={<ToolBadge value={s.ultimoUtensileDisponibile} />}
         />
       </DataSection>
     </div>
+  )
+}
+
+function ToolBadge({ value }: { value: string }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-sm bg-[var(--bg-muted)] px-2 py-0.5 text-xs font-normal tracking-wide text-[var(--text-subtle)]">
+      <PlugsIcon className="h-3 w-3 shrink-0 text-[var(--icon-default-disabled)]" />
+      {value}
+    </span>
   )
 }

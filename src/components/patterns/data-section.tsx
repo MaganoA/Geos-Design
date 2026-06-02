@@ -14,7 +14,10 @@ export function DataSection({
   children: ReactNode
 }) {
   return (
-    <section className="rounded-[var(--radius-md)] border border-[var(--border-mute)] px-3 pt-3 pb-2">
+    <section
+      className="rounded-[var(--radius-md)] px-3 pt-3 pb-2"
+      style={{ border: '0.5px solid var(--border-mute)' }}
+    >
       <header className="mb-2">
         <Text variant="sm/medium">{title}</Text>
       </header>

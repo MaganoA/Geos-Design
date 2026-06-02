@@ -88,7 +88,6 @@ import { Panel as PortaleTesta2LampadeUvPanel } from './portale-testa-2-lampade-
 import { Toolbar as PortaleTesta2LampadeUvToolbar } from './portale-testa-2-lampade-uv/toolbar'
 import { Panel as SpeedPanel } from './speed/panel'
 import { Toolbar as SpeedToolbar } from './speed/toolbar'
-import { HeaderExtra as SpeedHeaderExtra } from './speed/header-extra'
 import { Panel as SpeedSoffiatorePanel } from './speed-soffiatore/panel'
 import { Toolbar as SpeedSoffiatoreToolbar } from './speed-soffiatore/toolbar'
 import { Panel as SpeedBarraLavaggioPanel } from './speed-barra-lavaggio/panel'
@@ -287,7 +286,6 @@ const registry: Record<string, RegisteredDevice> = {
     meta: speedMeta.meta,
     Panel: SpeedPanel as React.ComponentType<{ label: string }>,
     Toolbar: SpeedToolbar,
-    HeaderExtra: SpeedHeaderExtra,
   },
   'speed-soffiatore': {
     meta: speedSoffiatoreMeta.meta,
